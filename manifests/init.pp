@@ -12,11 +12,41 @@
 # [*target*]
 #   the path to install gerrit to
 #
-# [*user*]
-#   the user used to install gerrit
+# [*auth_type*]
+#   auth type (ldap, http, ...)
+#
+# [*cannonicalweburl*]
+#   cannonical web url used in several places by gerrit
+#
+# [*configure_gitweb*]
+#   boolean. should we adapt gerrit configuration to support gitweb
+#
+# [*database_backend*]
+#   database backend. currently mysql and h2 are supported
+#
+# [*database_host*]
+#   database name (mysql)
+#
+# [*database_name*]
+#   database name (h2 and mysql)
+#
+# [*database_password*]
+#   database name (mysql)
+#
+# [*database_username*]
+#   database username (mysql)
+#
+# [*download_scheme*]
+#   download scheme (ssh, http, ...)
 #
 # [*git_package*]
 #   the name of the git package
+#
+# [*gitweb_cgi_path*]
+#   path to the gitweb cgi executable
+#
+# [*gitweb_package*]
+#   the name of the gitweb package
 #
 # [*java_package*]
 #   the name of the java package
@@ -24,32 +54,35 @@
 # [*create_user*]
 #   boolean. should this module create the user.
 #
+# [*install_git*]
+#   boolean. should this module install git.
+#
+# [*install_gitweb*]
+#   boolean. should this module install gitweb.
+#
 # [*install_java*]
 #   boolean. should this module install java.
 #
 # [*install_java_mysql*]
 #   boolean. should this module install java mysql connector.
 #
-# [*install_git*]
-#   boolean. should this module install git.
+# [*install_user*]
+#   boolean. should this module setup the gerrit user
 #
 # [*manage_service*]
 #   boolean. should this module launch the service
 #
-# [*database_backend*]
-#   database backend. currently mysql and h2 are supported
+# [*mysql_java_connector*]
+#   the name of the java connector file
 #
-# [*database_name*]
-#   database name (h2 and mysql)
+# [*mysql_java_package*]
+#   the name of the java connector package
 #
-# [*database_username*]
-#   database username (mysql)
+# [*manage_service*]
+#   boolean. should this module launch the service
 #
-# [*database_password*]
-#   database name (mysql)
-#
-# [*database_host*]
-#   database name (mysql)
+# [*user*]
+#   the user used to install gerrit
 #
 # === Examples
 #
@@ -70,21 +103,28 @@
 class gerrit (
   $source,
   $target,
-  $user                 = 'gerrit',
-  $java_package         = $gerrit::params::java_package,
+  $auth_type            = 'OPENID',
+  $canonicalweburl      = 'http://127.0.0.1:8080/',
+  $configure_gitweb     = true,
+  $database_backend     = 'h2',
+  $database_host        = undef,
+  $database_name        = 'db/ReviewDB',
+  $database_password    = undef,
+  $database_username    = undef,
+  $download_scheme      = 'ssh anon_http http',
   $git_package          = $gerrit::params::git_package,
-  $mysql_java_package   = $gerrit::params::mysql_java_package,
-  $mysql_java_connector = $gerrit::params::mysql_java_connector,
-  $install_user         = true,
+  $gitweb_cgi_path      = $gerrit::params::gitweb_cgi_path,
+  $gitweb_package       = $gerrit::params::gitweb_package,
+  $install_git          = true,
+  $install_gitweb       = true,
   $install_java         = true,
   $install_java_mysql   = true,
-  $install_git          = true,
+  $install_user         = true,
+  $java_package         = $gerrit::params::java_package,
   $manage_service       = true,
-  $database_backend     = 'h2',
-  $database_name        = 'db/ReviewDB',
-  $database_username    = undef,
-  $database_password    = undef,
-  $database_host        = undef,
+  $mysql_java_connector = $gerrit::params::mysql_java_connector,
+  $mysql_java_package   = $gerrit::params::mysql_java_package,
+  $user                 = 'gerrit',
 ) inherits gerrit::params {
 
   if $install_user {
@@ -162,7 +202,7 @@ class gerrit (
   }
 
   ini_setting {
-    'database_backend':
+    'gerrit_database_backend':
       ensure  => present,
       section => 'database',
       setting => 'type',
@@ -170,7 +210,7 @@ class gerrit (
   } ~> Exec['reload_gerrit']
 
   ini_setting {
-    'database':
+    'gerrit_database':
       ensure  => present,
       section => 'database',
       setting => 'database',
@@ -179,7 +219,7 @@ class gerrit (
 
   if $database_username {
     ini_setting {
-      'database_username':
+      'gerrit_database_username':
         ensure  => present,
         section => 'database',
         setting => 'username',
@@ -189,7 +229,7 @@ class gerrit (
 
   if $database_password {
     ini_setting {
-      'database_password':
+      'gerrit_database_password':
         ensure  => present,
         section => 'database',
         setting => 'password',
@@ -200,12 +240,53 @@ class gerrit (
 
   if $database_host {
     ini_setting {
-      'database_host':
+      'gerrit_database_host':
         ensure  => present,
         section => 'database',
         setting => 'host',
         value   => $database_host,
     } ~> Exec['reload_gerrit']
+  }
+
+  ini_setting {
+    'gerrit_auth':
+      ensure  => present,
+      section => 'auth',
+      setting => 'type',
+      value   => $auth_type,
+  } ~> Service['gerrit']
+
+  ini_setting {
+    'gerrit_url':
+      ensure  => present,
+      section => 'gerrit',
+      setting => 'canonicalWebUrl',
+      value   => $cannonicalweburl,
+  } ~> Service['gerrit']
+
+  ini_setting {
+    'gerrit_download_scheme':
+      ensure  => present,
+      section => 'download',
+      setting => 'scheme',
+      value   => $download_scheme,
+  } ~> Service['gerrit']
+
+  if $install_gitweb {
+    package {
+      $gitweb_package:
+        ensure => installed
+    }
+  }
+
+  if $configure_gitweb {
+    ini_setting {
+      'gerrit_gitweb':
+        ensure  => present,
+        section => 'gitweb',
+        setting => 'cgi',
+        value   => $gitweb_cgi_path,
+    } ~> Service['gerrit']
   }
 
 }
