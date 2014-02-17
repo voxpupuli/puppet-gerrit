@@ -15,8 +15,8 @@
 # [*auth_type*]
 #   auth type (ldap, http, ...)
 #
-# [*cannonicalweburl*]
-#   cannonical web url used in several places by gerrit
+# [*canonicalweburl*]
+#   canonical web url used in several places by gerrit
 #
 # [*configure_gitweb*]
 #   boolean. should we adapt gerrit configuration to support gitweb
@@ -24,8 +24,8 @@
 # [*database_backend*]
 #   database backend. currently mysql and h2 are supported
 #
-# [*database_host*]
-#   database name (mysql)
+# [*database_hostname*]
+#   database hostname (mysql)
 #
 # [*database_name*]
 #   database name (h2 and mysql)
@@ -69,6 +69,29 @@
 # [*install_user*]
 #   boolean. should this module setup the gerrit user
 #
+# [*ldap_accountbase*]
+#   The base dn for the accounts
+#
+# [*ldap_groupbase*]
+#   The base dn for the groups
+#
+# [*ldap_password*]
+#   the ldap password to bind to
+#
+# [*ldap_server*]
+#   the ldap server address
+#
+# [*ldap_sslverify*]
+#   If false and $ldap_server is an ldaps:// style URL, Gerrit will not verify
+#   the server certificate when it connects to perform a query.
+#
+# [*ldap_timeout*]
+#   The read timeout for an LDAP operation. The value is in the usual time-unit
+#   format like "1 s", "100 ms", etc..
+#
+# [*ldap_username*]
+#   the ldap user to bind to
+#
 # [*manage_service*]
 #   boolean. should this module launch the service
 #
@@ -107,7 +130,7 @@ class gerrit (
   $canonicalweburl      = 'http://127.0.0.1:8080/',
   $configure_gitweb     = true,
   $database_backend     = 'h2',
-  $database_host        = undef,
+  $database_hostname    = undef,
   $database_name        = 'db/ReviewDB',
   $database_password    = undef,
   $database_username    = undef,
@@ -121,6 +144,13 @@ class gerrit (
   $install_java_mysql   = true,
   $install_user         = true,
   $java_package         = $gerrit::params::java_package,
+  $ldap_accountbase     = undef,
+  $ldap_groupbase       = undef,
+  $ldap_password        = undef,
+  $ldap_server          = undef,
+  $ldap_sslverify       = undef,
+  $ldap_timeout         = undef,
+  $ldap_username        = undef,
   $manage_service       = true,
   $mysql_java_connector = $gerrit::params::mysql_java_connector,
   $mysql_java_package   = $gerrit::params::mysql_java_package,
@@ -147,14 +177,6 @@ class gerrit (
       $mysql_java_package:
         ensure  => installed,
         require => Exec ['install_gerrit'],
-    } ->
-    file {
-      "$target/lib/mysql-connector-java.jar":
-        ensure => link,
-        target => $mysql_java_connector,
-    }
-    if $manage_service {
-      File["$target/lib/mysql-connector-java.jar"] -> Service['gerrit']
     }
   }
 
@@ -195,82 +217,64 @@ class gerrit (
     }
   }
 
-  Ini_setting {
-    path    => "${target}/etc/gerrit.config",
-    notify  => Service['gerrit'],
-    require => Exec ['install_gerrit'],
+  Gerrit::Config {
+    file    => "${target}/etc/gerrit.config",
   }
 
-  ini_setting {
-    'gerrit_database_backend':
-      ensure  => present,
-      section => 'database',
-      setting => 'type',
-      value   => $database_backend,
-  } ~> Exec['reload_gerrit']
+  gerrit::config {
+    'database.type':
+      ensure => present,
+      value  => $database_backend,
+  }
 
-  ini_setting {
-    'gerrit_database':
+  gerrit::config {
+    'database.database':
       ensure  => present,
-      section => 'database',
-      setting => 'database',
       value   => $database_name,
-  } ~> Exec['reload_gerrit']
+  }
 
   if $database_username {
-    ini_setting {
-      'gerrit_database_username':
+    gerrit::config {
+      'database.username':
         ensure  => present,
-        section => 'database',
-        setting => 'username',
         value   => $database_username,
-    } ~> Exec['reload_gerrit']
+    }
   }
 
   if $database_password {
-    ini_setting {
-      'gerrit_database_password':
+    gerrit::config {
+      'database.password':
         ensure  => present,
-        section => 'database',
-        setting => 'password',
         value   => $database_password,
-        path    => "${target}/etc/secure.config",
-    } ~> Exec['reload_gerrit']
+        file    => "${target}/etc/secure.config",
+    }
   }
 
-  if $database_host {
-    ini_setting {
-      'gerrit_database_host':
+  if $database_hostname {
+    gerrit::config {
+      'database.hostname':
         ensure  => present,
-        section => 'database',
-        setting => 'host',
-        value   => $database_host,
-    } ~> Exec['reload_gerrit']
+        value   => $database_hostname,
+    }
   }
 
-  ini_setting {
-    'gerrit_auth':
+  gerrit::config {
+    'auth.type':
       ensure  => present,
-      section => 'auth',
-      setting => 'type',
       value   => $auth_type,
-  } ~> Service['gerrit']
+  }
 
-  ini_setting {
-    'gerrit_url':
+  gerrit::config {
+    'gerrit.canonicalWebUrl':
       ensure  => present,
-      section => 'gerrit',
-      setting => 'canonicalWebUrl',
-      value   => $cannonicalweburl,
-  } ~> Service['gerrit']
+      value   => $canonicalweburl,
+  }
 
-  ini_setting {
-    'gerrit_download_scheme':
+  gerrit::config {
+    'download.scheme':
       ensure  => present,
-      section => 'download',
-      setting => 'scheme',
       value   => $download_scheme,
-  } ~> Service['gerrit']
+  }
 
   if $install_gitweb {
     package {
@@ -280,13 +284,68 @@ class gerrit (
   }
 
   if $configure_gitweb {
-    ini_setting {
-      'gerrit_gitweb':
+    gerrit::config {
+      'gitweb.cgi':
         ensure  => present,
-        section => 'gitweb',
-        setting => 'cgi',
         value   => $gitweb_cgi_path,
-    } ~> Service['gerrit']
+    }
+  }
+
+  if $ldap_server {
+    gerrit::config {
+      'ldap.server':
+        ensure  => present,
+        value   => $ldap_server,
+    }
+  }
+
+  if $ldap_accountbase {
+    gerrit::config {
+      'ldap.accountBase':
+        ensure  => present,
+        value   => $ldap_accountbase,
+    }
+  }
+
+  if $ldap_groupbase {
+    gerrit::config {
+      'ldap.groupBase':
+        ensure  => present,
+        value   => $ldap_groupbase,
+    }
+  }
+
+  if $ldap_username {
+    gerrit::config {
+      'ldap.username':
+        ensure  => present,
+        value   => $ldap_username,
+    }
+  }
+
+  if $ldap_password {
+    gerrit::config {
+      'ldap.password':
+        ensure  => present,
+        value   => $ldap_password,
+        file    => "${target}/etc/secure.config",
+    }
+  }
+
+  if $ldap_sslverify {
+    gerrit::config {
+      'ldap.sslVerify':
+        ensure  => present,
+        value   => $ldap_sslverify,
+    }
+  }
+
+  if $ldap_timeout {
+    gerrit::config {
+      'ldap.readTimeout':
+        ensure  => present,
+        value   => $ldap_timeout,
+    }
   }
 
 }
