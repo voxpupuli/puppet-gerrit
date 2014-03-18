@@ -1,7 +1,7 @@
 define gerrit::config(
   $value,
   $ensure = present,
-  $file   = "${gerrit::target}/etc/gerrit.conf"
+  $file   = "${gerrit::target}/etc/gerrit.config"
 ){
 
   exec {
