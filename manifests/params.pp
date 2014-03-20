@@ -4,11 +4,8 @@
 #
 # === Authors
 #
+# Aimon Bustardo <aimon.bustardo@nexusis.com>
 # Julien Pivotto <roidelapluie@inuits.eu>
-#
-# === Copyright
-#
-# Copyright 2014 Julien Pivotto
 #
 class gerrit::params{
 

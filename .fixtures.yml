@@ -1,0 +1,6 @@
+fixtures:
+  symlinks:
+    gerrit: "#{source_dir}/../gerrit"
+    mysql: "#{source_dir}/../mysql"
+    stdlib: "#{source_dir}/../stdlib"
+    apache: "#{source_dir}/../apache"

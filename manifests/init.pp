@@ -8,6 +8,7 @@
 #
 # [*source*]
 #   the path to the gerrit.war file
+#   You can now specify URLs or local paths for your war file
 #
 # [*target*]
 #   the path to install gerrit to
@@ -132,12 +133,15 @@ class gerrit (
   $database_backend     = 'h2',
   $database_hostname    = undef,
   $database_name        = 'db/ReviewDB',
-  $database_password    = undef,
+  $database_password    = false,
   $database_username    = undef,
-  $download_scheme      = 'ssh anon_http http',
+  $download_scheme      = 'ssh,anon_http,http',
   $git_package          = $gerrit::params::git_package,
   $gitweb_cgi_path      = $gerrit::params::gitweb_cgi_path,
   $gitweb_package       = $gerrit::params::gitweb_package,
+  $manage_db            = true,
+  $db_type              = 'mysql',
+  $install_path         = '/opt/gerrit',
   $install_git          = true,
   $install_gitweb       = true,
   $install_java         = true,
@@ -157,6 +161,18 @@ class gerrit (
   $user                 = 'gerrit',
 ) inherits gerrit::params {
 
+  # check if $source is an URL
+  if $source =~ /http(s)?:\/\/.*/ {
+    $local_source_path = regsubst($target, '[ _a-z0-9.-]+(\/)?$', '/')
+    $local_source = "${local_source}/gerrit.war"
+    exec{"fetch_gerrit_source":
+      command => "curl --insecure --create-dirs --output ${local_source} ${source}",
+      creates =>  $local_source,
+    }
+  } else {
+    $local_source = $source
+  }
+
   if $install_user {
     user {
       $user:
@@ -170,6 +186,21 @@ class gerrit (
       $java_package:
         ensure => installed,
     } -> Exec ['install_gerrit']
+  }
+  
+  if $manage_db {
+    if $db_type == 'mysql' {
+      class{ 'gerrit::db::mysql':
+        db_root_password  => $database_password,
+        db_user           => 'gerrit',
+        db_user_password  => $database_password,
+        require => Exec['install_gerrit'],
+        before  => [Exec['reload_gerrit'], Service['gerrit']],
+        notify  => [Exec['reload_gerrit'], Service['gerrit']],
+      }
+    } else {
+      fail("Unsupported DB Type")
+    }
   }
 
   if $install_java_mysql {
@@ -187,17 +218,22 @@ class gerrit (
     } -> Exec ['install_gerrit']
   }
 
+  file{$install_path:
+    ensure  =>  directory,
+    owner   =>  $gerrit::user,
+  }
   exec {
     'install_gerrit':
-      command => "java -jar ${source} init -d ${target}",
-      creates => "${target}/bin/gerrit.sh",
-      user    => $user,
-      path    => $::path,
+      command =>  "java -jar ${local_source} init -d ${target} --batch > /tmp/gerrit_install.out 2>&1 ",
+      creates =>  "${target}/bin/gerrit.sh",
+      user    =>  $user,
+      path    =>  $::path,
+      require =>  File[$install_path],
   }
 
   exec {
     'reload_gerrit':
-      command     => "java -jar ${target}/bin/gerrit.war init -d ${target}",
+      command     => "/usr/bin/java -jar ${target}/bin/gerrit.war init -d ${target} --batch",
       refreshonly => true,
       user        => $user,
       path        => $::path,
@@ -217,63 +253,71 @@ class gerrit (
     }
   }
 
-  Gerrit::Config {
-    file    => "${target}/etc/gerrit.config",
+  Gerrit_config{
+    require => Exec['install_gerrit'],
+    before  => [Exec['reload_gerrit'], Service['gerrit']],
+    notify  => [Exec['reload_gerrit'], Service['gerrit']],
   }
-
-  gerrit::config {
-    'database.type':
+  Gerrit_secure_config{
+    require => Exec['install_gerrit'],
+    before  => [Exec['reload_gerrit'], Service['gerrit']],
+    notify  => [Exec['reload_gerrit'], Service['gerrit']]
+  }
+  Gerrit::Multi_value_config{
+    require => Exec['install_gerrit'],
+    before  => [Exec['reload_gerrit'], Service['gerrit']],
+    notify  => [Exec['reload_gerrit'], Service['gerrit']]
+  }
+  gerrit_config {'database/type':
       ensure => present,
       value  => $database_backend,
   }
 
-  gerrit::config {
-    'database.database':
+  gerrit_config {'database/database':
       ensure  => present,
       value   => $database_name,
   }
 
   if $database_username {
-    gerrit::config {
-      'database.username':
+    gerrit_config {'database/username':
         ensure  => present,
         value   => $database_username,
     }
   }
 
   if $database_password {
-    gerrit::config {
-      'database.password':
+    gerrit_secure_config {'database/password':
         ensure  => present,
         value   => $database_password,
-        file    => "${target}/etc/secure.config",
     }
   }
 
   if $database_hostname {
-    gerrit::config {
-      'database.hostname':
+    gerrit_config {'database/hostname':
         ensure  => present,
         value   => $database_hostname,
     }
   }
 
-  gerrit::config {
-    'auth.type':
+  gerrit_config {'auth/type':
       ensure  => present,
       value   => $auth_type,
   }
 
-  gerrit::config {
-    'gerrit.canonicalWebUrl':
+  gerrit_config {'gerrit/canonicalWebUrl':
       ensure  => present,
       value   => $canonicalweburl,
   }
-
-  gerrit::config {
-    'download.scheme':
-      ensure  => present,
-      value   => $download_scheme,
+  
+  # This needs work.. in gerrit the vars can be define multiple times within the same seciton. Setting to a single value atm so I can proceed. May need to create erb template for it.
+  #$download_scheme_array = split($download_scheme, ',')
+  $download_scheme_array = 'http'
+  
+  gerrit::multi_value_config{$download_scheme_array:
+      section      => 'download',
+      setting      => 'scheme',
+      ensure       => absent,
+      config_type  => 'gerrit_config',
   }
 
   if $install_gitweb {
@@ -284,48 +328,42 @@ class gerrit (
   }
 
   if $configure_gitweb {
-    gerrit::config {
-      'gitweb.cgi':
+    gerrit_config {'gitweb/cgi':
         ensure  => present,
         value   => $gitweb_cgi_path,
     }
   }
 
   if $ldap_server {
-    gerrit::config {
-      'ldap.server':
+    gerrit_config {'ldap/server':
         ensure  => present,
         value   => $ldap_server,
     }
   }
 
   if $ldap_accountbase {
-    gerrit::config {
-      'ldap.accountBase':
+    gerrit_config {'ldap/accountBase':
         ensure  => present,
         value   => $ldap_accountbase,
     }
   }
 
   if $ldap_groupbase {
-    gerrit::config {
-      'ldap.groupBase':
+    gerrit_config {'ldap/groupBase':
         ensure  => present,
         value   => $ldap_groupbase,
     }
   }
 
   if $ldap_username {
-    gerrit::config {
-      'ldap.username':
+    gerrit_config {'ldap/username':
         ensure  => present,
         value   => $ldap_username,
     }
   }
 
   if $ldap_password {
-    gerrit::config {
-      'ldap.password':
+    gerrit_secure_config {'ldap/password':
         ensure  => present,
         value   => $ldap_password,
         file    => "${target}/etc/secure.config",
@@ -333,19 +371,16 @@ class gerrit (
   }
 
   if $ldap_sslverify {
-    gerrit::config {
-      'ldap.sslVerify':
+    gerrit_config {'ldap/sslVerify':
         ensure  => present,
         value   => $ldap_sslverify,
     }
   }
 
   if $ldap_timeout {
-    gerrit::config {
-      'ldap.readTimeout':
+    gerrit_config {'ldap/readTimeout':
         ensure  => present,
         value   => $ldap_timeout,
     }
   }
-
 }
