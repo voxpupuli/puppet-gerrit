@@ -159,6 +159,12 @@ class gerrit (
   $mysql_java_connector = $gerrit::params::mysql_java_connector,
   $mysql_java_package   = $gerrit::params::mysql_java_package,
   $user                 = 'gerrit',
+  $smtp_server          = 'localhost',
+  $smtp_user            = undef,
+  $smtp_port            = undef,
+  $smtp_encryption      = undef,
+  $smtp_pass            = undef,
+  $smtp_from            = undef,
 ) inherits gerrit::params {
 
   # check if $source is an URL
@@ -237,7 +243,7 @@ class gerrit (
       refreshonly => true,
       user        => $user,
       path        => $::path,
-      notify      => Service['gerrit'],
+      notify      => [Service['gerrit'], Exec['clone_allprojects']],
   }
 
   if $manage_service {
@@ -252,6 +258,57 @@ class gerrit (
         require   => Exec ['install_gerrit'],
     }
   }
+
+  #Add verify label
+
+  exec{'clone_allprojects':
+    command     =>  "git clone ${target}/git/All-Projects.git /tmp/All-Projects",
+    creates     =>  "/tmp/All-Projects",
+    refreshonly =>  true,
+    path        => $::path,
+    notify      =>  Exec['fetch_origin_allprojects'],
+  }
+  exec{'fetch_origin_allprojects':
+    command     =>  "git fetch origin refs/meta/config:refs/meta/config",
+    cwd         =>  "/tmp/All-Projects/",
+    refreshonly =>  true,
+    path        => $::path,
+    notify      =>  Exec['checkout_config_allprojects'],
+  }
+  exec{'checkout_config_allprojects':
+    command     =>  "git checkout refs/meta/config -b refs/meta/config",
+    cwd         =>  "/tmp/All-Projects/",
+    refreshonly =>  true,
+    path        => $::path,
+    notify      =>  Exec['insert_verify_allprojects'],
+  }
+  # This is a horrible horrible hack to allow variable overloading. 
+  exec{'insert_verify_allprojects':
+    command =>  "echo -en '[label \"Verified\"]\nfunction = MaxWithBlock\nvalue = -1 Fails\nvalue =  0 No score\nvalue = +1 Verified\n' >> project.config",
+    cwd         =>  "/tmp/All-Projects/",
+    refreshonly =>  true,
+    path        => $::path,
+    notify      =>  Exec['commit_verify'],
+    unless      =>  'grep -q "\[label \"Verified\"\]" project.config',
+  }
+  exec{'commit_verify':
+    command =>  'git commit -am "Add label \'Verified\' and its config"',
+    cwd         =>  "/tmp/All-Projects/",
+    refreshonly =>  true,
+    path        => $::path,
+    notify      =>  Exec['push_verify'],
+  }
+  exec{'push_verify':
+    command =>  'git push origin HEAD:refs/meta/config',
+    cwd         =>  "/tmp/All-Projects/",
+    refreshonly =>  true,
+    path        => $::path,
+  }
+
+
+
+#####################CONFIG#################################
+
 
   Gerrit_config{
     require => Exec['install_gerrit'],
@@ -309,7 +366,7 @@ class gerrit (
       value   => $canonicalweburl,
   }
   
-  # This needs work.. in gerrit the vars can be define multiple times within the same seciton. Setting to a single value atm so I can proceed. May need to create erb template for it.
+  # This needs work.. in gerrit the vars can be define multiple times within the same seciton. Setting to a single value atm so I can proceed. NOTE: This can be done with file_line with explicity matches and 'after's.
   #$download_scheme_array = split($download_scheme, ',')
   $download_scheme_array = 'http'
   
@@ -320,6 +377,48 @@ class gerrit (
       config_type  => 'gerrit_config',
   }
 
+  # Configure Email
+  gerrit_config {'sendemail/smtpServer':
+    ensure  =>  present,
+    value   =>  $smtp_server
+  }
+
+  if $smtp_user {
+    gerrit_config {'sendemail/smtpUser':
+      ensure  =>  present,
+      value   =>  $smtp_user
+    }
+  }
+  if $smtp_port {
+    gerrit_config {'sendemail/smtpServerPort':
+      ensure  =>  present,
+      value   =>  $smtp_port
+    }
+  }
+  if $smtp_encryption {
+    gerrit_config {'sendemail/smtpEncryption':
+      ensure  =>  present,
+      value   =>  $smtp_encryption,
+    }
+  }
+  if $smtp_pass {
+    gerrit_config {'sendemail/smtpPass':
+      ensure  =>  present,
+      value   =>  $smtp_pass
+    }
+  }
+  if $smtp_from {
+    $real_smtp_from = $smtp_from
+  } else {
+    $real_smtp_from = '${user} (Code Review) <registered@user.email>'
+  }
+  gerrit_config {'sendemail/from':
+    ensure  =>  present,
+    value   =>  $real_smtp_from,
+  }
+
+
+  # Gitweb
   if $install_gitweb {
     package {
       $gitweb_package:

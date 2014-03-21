@@ -1,4 +1,4 @@
-name    'NexusIS-gerrit'
+name    'aimonb/nexusis_gerrit'
 version '1.0.0'
 author 'aimonb'
 license 'Apache 2.0'
@@ -7,5 +7,6 @@ description 'Gerrit is a web based code review system, facilitating online code 
 project_page 'https://code.google.com/p/gerrit/'
 
 dependency 'puppetlabs/stdlib', '>= 3.2.1'
-dependency 'puppetlabs/mysql', '>= 2.2.1 < 2.2.2'
+dependency 'puppetlabs/mysql', '>=0.6.1 <1.0.0'
 dependency 'puppetlabs/apache', '>= 0.4.0'
+dependency 'puppetlabs/inifile', '>=1.0.0 <2.0.0'
