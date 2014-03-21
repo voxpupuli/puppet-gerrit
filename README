@@ -1,11 +1,18 @@
-gerrit
+NexusIS-gerrit
 
-This is the gerrit module.
+This module is a fork from roidelapluie/puppet-gerrit. This fork adds:
+
+- Type and provider for handling gerrit configs
+- Ability to configure SMTP settings
+- Adds [label "Verified"] to project.config in All-Projects repo
+- Updated to latest gerrit version. 
+
 
 License
 -------
-
+Apache 2.0
 
 Contact
 -------
+
 
