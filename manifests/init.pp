@@ -18,6 +18,16 @@
 # [*canonicalweburl*]
 #   canonical web url used in several places by gerrit
 #
+# [*httpd_protocol*]
+#   The protocol used by gerrit.
+#   Options : http, https, proxy-http, proxy-https
+#
+# [*httpd_hostname*]
+#   The hostname on wich gerrit will be reachable. Default any.
+#
+# [*httpd_port*]
+#   The port on wich gerrit will be reachable
+#
 # [*configure_gitweb*]
 #   boolean. should we adapt gerrit configuration to support gitweb
 #
@@ -128,6 +138,9 @@ class gerrit (
   $target,
   $auth_type            = 'OPENID',
   $canonicalweburl      = 'http://127.0.0.1:8080/',
+  $httpd_protocol       = 'http',
+  $httpd_hostname       = '*',
+  $httpd_port           = 8080,
   $configure_gitweb     = true,
   $database_backend     = 'h2',
   $database_hostname    = undef,
@@ -224,6 +237,12 @@ class gerrit (
 
   Gerrit::Config {
     file    => "${target}/etc/gerrit.config",
+  }
+
+  gerrit::config {
+    'httpd.listenUrl':
+      ensure => present,
+      value  => "${httpd_protocol}://${httpd_hostname}:${httpd_port}",
   }
 
   gerrit::config {
