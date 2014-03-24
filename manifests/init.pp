@@ -72,6 +72,20 @@
 # [*ldap_accountbase*]
 #   The base dn for the accounts
 #
+# [*ldap_accountpattern*]
+#   The query pattern to use when searching for a user account.
+#   format like "(&(objectClass=inetOrgPerson)(cn=${username}))"
+#
+# [*ldap_accountemailaddress*]
+#   The name of an attribute on the user account object which contains the
+#   user's Internet email address
+#   format like "mail"
+#
+# [*ldap_accountsshusername*]
+#   The Name of an attribute on the user account object which contains the
+#   initial value for the user's SSH username field in Gerrit
+#   format like "cn"
+#
 # [*ldap_groupbase*]
 #   The base dn for the groups
 #
@@ -126,35 +140,38 @@
 class gerrit (
   $source,
   $target,
-  $auth_type            = 'OPENID',
-  $canonicalweburl      = 'http://127.0.0.1:8080/',
-  $configure_gitweb     = true,
-  $database_backend     = 'h2',
-  $database_hostname    = undef,
-  $database_name        = 'db/ReviewDB',
-  $database_password    = undef,
-  $database_username    = undef,
-  $download_scheme      = 'ssh anon_http http',
-  $git_package          = $gerrit::params::git_package,
-  $gitweb_cgi_path      = $gerrit::params::gitweb_cgi_path,
-  $gitweb_package       = $gerrit::params::gitweb_package,
-  $install_git          = true,
-  $install_gitweb       = true,
-  $install_java         = true,
-  $install_java_mysql   = true,
-  $install_user         = true,
-  $java_package         = $gerrit::params::java_package,
-  $ldap_accountbase     = undef,
-  $ldap_groupbase       = undef,
-  $ldap_password        = undef,
-  $ldap_server          = undef,
-  $ldap_sslverify       = undef,
-  $ldap_timeout         = undef,
-  $ldap_username        = undef,
-  $manage_service       = true,
-  $mysql_java_connector = $gerrit::params::mysql_java_connector,
-  $mysql_java_package   = $gerrit::params::mysql_java_package,
-  $user                 = 'gerrit',
+  $auth_type                = 'OPENID',
+  $canonicalweburl          = 'http://127.0.0.1:8080/',
+  $configure_gitweb         = true,
+  $database_backend         = 'h2',
+  $database_hostname        = undef,
+  $database_name            = 'db/ReviewDB',
+  $database_password        = undef,
+  $database_username        = undef,
+  $download_scheme          = 'ssh anon_http http',
+  $git_package              = $gerrit::params::git_package,
+  $gitweb_cgi_path          = $gerrit::params::gitweb_cgi_path,
+  $gitweb_package           = $gerrit::params::gitweb_package,
+  $install_git              = true,
+  $install_gitweb           = true,
+  $install_java             = true,
+  $install_java_mysql       = true,
+  $install_user             = true,
+  $java_package             = $gerrit::params::java_package,
+  $ldap_accountbase         = undef,
+  $ldap_accountpattern      = undef,
+  $ldap_accountemailaddress = undef,
+  $ldap_accountsshusername  = undef,
+  $ldap_groupbase           = undef,
+  $ldap_password            = undef,
+  $ldap_server              = undef,
+  $ldap_sslverify           = undef,
+  $ldap_timeout             = undef,
+  $ldap_username            = undef,
+  $manage_service           = true,
+  $mysql_java_connector     = $gerrit::params::mysql_java_connector,
+  $mysql_java_package       = $gerrit::params::mysql_java_package,
+  $user                     = 'gerrit',
 ) inherits gerrit::params {
 
   if $install_user {
@@ -304,6 +321,30 @@ class gerrit (
       'ldap.accountBase':
         ensure  => present,
         value   => $ldap_accountbase,
+    }
+  }
+
+  if $ldap_accountpattern {
+    gerrit::config {
+      'ldap.accountPattern':
+        ensure  => present,
+        value   => $ldap_accountpattern,
+    }
+  }
+
+  if $ldap_accountemailaddress{
+    gerrit::config {
+      'ldap.accountEmailAddress':
+        ensure  => present,
+        value   => $ldap_accountemailaddress,
+    }
+  }
+
+  if $ldap_accountsshusername {
+    gerrit::config {
+      'ldap.accountSshUserName':
+        ensure  => present,
+        value   => $ldap_accountsshusername,
     }
   }
 
