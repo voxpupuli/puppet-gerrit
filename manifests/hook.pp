@@ -1,18 +1,18 @@
 define gerrit::hook(
-  $repository,
   $ensure   = 'present',
   $source   = undef,
   $content  = undef,
 ){
 
   file{
-    "${gerrit::target}/git/${repository}.git/hooks/$name":
+    "${gerrit::target}/hooks/${name}":
       ensure   => $ensure,
       source   => $source,
-      content  => $template,
+      content  => $content,
       owner    => $gerrit::user,
-      mode     => 0700,
-      require  => Exec['install_gerrit'],
+      group    => $gerrit::user,
+      mode     => '0700',
+      require  => [Exec['install_gerrit'], Gerrit::Folder['hooks']],
   }
 
 }
