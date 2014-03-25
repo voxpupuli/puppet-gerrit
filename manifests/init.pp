@@ -121,6 +121,9 @@
 # [*user*]
 #   the user used to install gerrit
 #
+# [*extra_folders*]
+#   Extra folder to create on gerrit home directory
+#
 # === Examples
 #
 #  class {
@@ -239,6 +242,8 @@ class gerrit (
         require   => Exec ['install_gerrit'],
     }
   }
+
+  gerrit::folder { $extra_folders : }
 
   Gerrit::Config {
     file    => "${target}/etc/gerrit.config",
