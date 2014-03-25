@@ -1,5 +1,5 @@
 name    'aimonb/nexusis_gerrit'
-version '1.1.1'
+version '1.1.2'
 author 'aimonb'
 license 'Apache 2.0'
 summary 'Web based code review and project management for Git based projects. '
