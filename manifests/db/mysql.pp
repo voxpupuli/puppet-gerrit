@@ -40,11 +40,12 @@ class gerrit::db::mysql(
 
   #install Lib
   $mysql_java_connector = $gerrit::params::mysql_java_connector
+  $mysql_javaj_connector_name = regsubst($mysql_java_connector, '^.*\/([_-a-z0-9.]+$)', '\1', 'I')
   exec{"install_mysql_connector":
     command => "cp ${mysql_java_connector} ${gerrit::install_path}/lib/ && chown ${gerrit::user} ${gerrit::install_path}/lib/*",
     user    =>  'root',
     path    =>  $::path,
-    creates =>  "${gerrit::install_path}/lib/${mysql_java_connector}",
+    creates =>  "${gerrit::install_path}/lib/${mysql_java_connector_name}",
   }
 
 

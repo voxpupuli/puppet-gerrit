@@ -266,9 +266,11 @@ class gerrit (
   exec{'clone_allprojects':
     command     =>  "git clone ${target}/git/All-Projects.git /tmp/All-Projects",
     creates     =>  "/tmp/All-Projects",
+    cwd         =>  "/tmp/",
     refreshonly =>  true,
     path        => $::path,
     notify      =>  Exec['fetch_origin_allprojects'],
+    unless      =>  'grep -q "\[label \"Verified\"\]" All-Projects/project.config',
   }
   exec{'fetch_origin_allprojects':
     command     =>  "git fetch origin refs/meta/config:refs/meta/config",
@@ -276,6 +278,7 @@ class gerrit (
     refreshonly =>  true,
     path        => $::path,
     notify      =>  Exec['checkout_config_allprojects'],
+    unless      =>  'grep -q "\[label \"Verified\"\]" project.config',
   }
   exec{'checkout_config_allprojects':
     command     =>  "git checkout refs/meta/config -b refs/meta/config",
@@ -283,6 +286,7 @@ class gerrit (
     refreshonly =>  true,
     path        => $::path,
     notify      =>  Exec['insert_verify_allprojects'],
+    unless      =>  'grep -q "\[label \"Verified\"\]" project.config',
   }
   # This is a horrible horrible hack to allow variable overloading. 
   exec{'insert_verify_allprojects':
@@ -291,7 +295,7 @@ class gerrit (
     refreshonly =>  true,
     path        => $::path,
     notify      =>  Exec['commit_verify'],
-    unless      =>  'grep -q "\[label \"Verified\"\]" project.config',
+    unless      =>  'git log |grep -q "Add label \'Verified\' and its config"',
   }
   exec{'commit_verify':
     command =>  'git commit -am "Add label \'Verified\' and its config"',
@@ -299,12 +303,14 @@ class gerrit (
     refreshonly =>  true,
     path        => $::path,
     notify      =>  Exec['push_verify'],
+    unless      =>  'git log |grep -q "Add label \'Verified\' and its config"',
   }
   exec{'push_verify':
     command =>  'git push origin HEAD:refs/meta/config',
     cwd         =>  "/tmp/All-Projects/",
     refreshonly =>  true,
     path        => $::path,
+    unless      => 'git status |grep -q "nothing to commit"',
   }
 
 
