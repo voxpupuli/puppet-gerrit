@@ -81,6 +81,16 @@
 #   user's Internet email address
 #   format like "mail"
 #
+# [*ldap_accountfullname*]
+#   The name of an attribute on the user account object which contains the
+#   user's fullname
+#   format like "displayName"
+#
+# [*ldap_accountfullname*]
+#   The name of an attribute on the user account object which contains the
+#   groups the user is part of
+#   format like "memberOf"
+#
 # [*ldap_accountsshusername*]
 #   The Name of an attribute on the user account object which contains the
 #   initial value for the user's SSH username field in Gerrit
@@ -88,6 +98,18 @@
 #
 # [*ldap_groupbase*]
 #   The base dn for the groups
+#
+# [*ldap_groupname*]
+#   Name of the attribute on the group object which contains the value to
+#   use as the group name in Gerrit
+#
+# [*ldap_grouppattern*]
+#   Query pattern used when searching for an LDAP group to connect to a
+#   Gerrit group.
+#
+# [*ldap_groupmemberpattern*]
+#   Query pattern to use when searching for the groups that a user account
+#   is currently a member of
 #
 # [*ldap_password*]
 #   the ldap password to bind to
@@ -164,8 +186,13 @@ class gerrit (
   $ldap_accountbase         = undef,
   $ldap_accountpattern      = undef,
   $ldap_accountemailaddress = undef,
+  $ldap_accountfullname     = undef,
+  $ldap_accountmemberfield  = undef,
   $ldap_accountsshusername  = undef,
   $ldap_groupbase           = undef,
+  $ldap_groupname           = undef,
+  $ldap_grouppattern        = undef,
+  $ldap_groupmemberpattern  = undef,
   $ldap_password            = undef,
   $ldap_server              = undef,
   $ldap_sslverify           = undef,
@@ -343,6 +370,24 @@ class gerrit (
     }
   }
 
+  if $ldap_accountfullname{
+    gerrit::config {
+      'ldap.accountFullName':
+        ensure  => present,
+        value   => $ldap_accountfullname,
+    }
+  }
+
+
+  if $ldap_accountmemberfield{
+    gerrit::config {
+      'ldap.accountMemberField':
+        ensure  => present,
+        value   => $ldap_accountmemberfield,
+    }
+  }
+
+
   if $ldap_accountemailaddress{
     gerrit::config {
       'ldap.accountEmailAddress':
@@ -364,6 +409,30 @@ class gerrit (
       'ldap.groupBase':
         ensure  => present,
         value   => $ldap_groupbase,
+    }
+  }
+
+  if $ldap_groupname {
+    gerrit::config {
+      'ldap.groupName':
+        ensure  => present,
+        value   => $ldap_groupname,
+    }
+  }
+
+  if $ldap_grouppattern {
+    gerrit::config {
+      'ldap.groupPattern':
+        ensure  => present,
+        value   => $ldap_grouppattern,
+    }
+  }
+
+  if $ldap_groupmemberpattern {
+    gerrit::config {
+      'ldap.groupMemberPattern':
+        ensure  => present,
+        value   => $ldap_groupmemberpattern,
     }
   }
 
