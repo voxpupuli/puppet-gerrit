@@ -175,7 +175,7 @@ class gerrit (
   $mysql_java_connector     = $gerrit::params::mysql_java_connector,
   $mysql_java_package       = $gerrit::params::mysql_java_package,
   $user                     = 'gerrit',
-  $extra_folders            = ['plugins']
+  $extra_folders            = ['hooks', 'plugins'],
 ) inherits gerrit::params {
 
   if $install_user {
