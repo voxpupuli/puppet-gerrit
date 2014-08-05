@@ -186,7 +186,7 @@ class gerrit (
   $database_name            = 'db/ReviewDB',
   $database_password        = undef,
   $database_username        = undef,
-  $download_scheme          = 'ssh anon_http http',
+  $download_scheme          = ['ssh', 'anon_http', 'http'],
   $git_package              = $gerrit::params::git_package,
   $gitweb_cgi_path          = $gerrit::params::gitweb_cgi_path,
   $gitweb_package           = $gerrit::params::gitweb_package,
