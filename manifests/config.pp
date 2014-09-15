@@ -25,9 +25,10 @@ define gerrit::config(
     # We want to run all these commands together because we can't use puppet
     # require to enforce ordering and the check on the empty exec assumes that
     # the values are in a specific order.
-    $command = "git config -f ${file} --add \"${name}\" "
-    $set_commands = prefix($value, $command)
-    $all_commands = join($set_commands, '; ')
+    $command = "git config -f ${file} --add \"${name}\" '"
+    $prefixed_commands = prefix($value, $command)
+    $suffixed_commands = suffix($prefixed_commands, "'")
+    $all_commands = join($suffixed_commands, '; ')
     exec { "config_${name}":
       command     => $all_commands,
       path        => $::path,
@@ -37,8 +38,8 @@ define gerrit::config(
   } else {
     exec {
       "config_${name}":
-        command => "git config -f ${file} \"${name}\" \"${value}\"",
-        unless  => "git config -f ${file} \"${name}\"|grep -x \"${value}\"",
+        command => "git config -f ${file} \"${name}\" \'${value}\'",
+        unless  => "git config -f ${file} \"${name}\"|grep -x \'${value}\'",
         path    => $::path,
         require => Exec['install_gerrit'],
     }
