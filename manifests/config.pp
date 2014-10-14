@@ -39,7 +39,7 @@ define gerrit::config(
     exec {
       "config_${name}":
         command => "git config -f ${file} \"${name}\" \'${value}\'",
-        unless  => "git config -f ${file} \"${name}\"|grep -x \'${value}\'",
+        unless  => "test \"$(git config -f ${file} \"${name}\")\" = \'${value}\'",
         path    => $::path,
         require => Exec['install_gerrit'],
     }
