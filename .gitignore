@@ -1,0 +1,8 @@
+.bundle/
+.idea/
+build/
+vendor/
+spec/fixtures/manifests
+spec/fixtures/modules
+*.swp
+Gemfile.lock

@@ -303,51 +303,51 @@ class gerrit (
 
   gerrit::config {
     'database.database':
-      ensure  => present,
-      value   => $database_name,
+      ensure => present,
+      value  => $database_name,
   }
 
   if $database_username {
     gerrit::config {
       'database.username':
-        ensure  => present,
-        value   => $database_username,
+        ensure => present,
+        value  => $database_username,
     }
   }
 
   if $database_password {
     gerrit::config {
       'database.password':
-        ensure  => present,
-        value   => $database_password,
-        file    => "${target}/etc/secure.config",
+        ensure => present,
+        value  => $database_password,
+        file   => "${target}/etc/secure.config",
     }
   }
 
   if $database_hostname {
     gerrit::config {
       'database.hostname':
-        ensure  => present,
-        value   => $database_hostname,
+        ensure => present,
+        value  => $database_hostname,
     }
   }
 
   gerrit::config {
     'auth.type':
-      ensure  => present,
-      value   => $auth_type,
+      ensure => present,
+      value  => $auth_type,
   }
 
   gerrit::config {
     'gerrit.canonicalWebUrl':
-      ensure  => present,
-      value   => $canonicalweburl,
+      ensure => present,
+      value  => $canonicalweburl,
   }
 
   gerrit::config {
     'download.scheme':
-      ensure  => present,
-      value   => $download_scheme,
+      ensure => present,
+      value  => $download_scheme,
   }
 
   if $install_gitweb {
@@ -360,40 +360,40 @@ class gerrit (
   if $configure_gitweb {
     gerrit::config {
       'gitweb.cgi':
-        ensure  => present,
-        value   => $gitweb_cgi_path,
+        ensure => present,
+        value  => $gitweb_cgi_path,
     }
   }
 
   if $ldap_server {
     gerrit::config {
       'ldap.server':
-        ensure  => present,
-        value   => $ldap_server,
+        ensure => present,
+        value  => $ldap_server,
     }
   }
 
   if $ldap_accountbase {
     gerrit::config {
       'ldap.accountBase':
-        ensure  => present,
-        value   => $ldap_accountbase,
+        ensure => present,
+        value  => $ldap_accountbase,
     }
   }
 
   if $ldap_accountpattern {
     gerrit::config {
       'ldap.accountPattern':
-        ensure  => present,
-        value   => $ldap_accountpattern,
+        ensure => present,
+        value  => $ldap_accountpattern,
     }
   }
 
   if $ldap_accountfullname{
     gerrit::config {
       'ldap.accountFullName':
-        ensure  => present,
-        value   => $ldap_accountfullname,
+        ensure => present,
+        value  => $ldap_accountfullname,
     }
   }
 
@@ -401,8 +401,8 @@ class gerrit (
   if $ldap_accountmemberfield{
     gerrit::config {
       'ldap.accountMemberField':
-        ensure  => present,
-        value   => $ldap_accountmemberfield,
+        ensure => present,
+        value  => $ldap_accountmemberfield,
     }
   }
 
@@ -410,81 +410,81 @@ class gerrit (
   if $ldap_accountemailaddress{
     gerrit::config {
       'ldap.accountEmailAddress':
-        ensure  => present,
-        value   => $ldap_accountemailaddress,
+        ensure => present,
+        value  => $ldap_accountemailaddress,
     }
   }
 
   if $ldap_accountsshusername {
     gerrit::config {
       'ldap.accountSshUserName':
-        ensure  => present,
-        value   => $ldap_accountsshusername,
+        ensure => present,
+        value  => $ldap_accountsshusername,
     }
   }
 
   if $ldap_groupbase {
     gerrit::config {
       'ldap.groupBase':
-        ensure  => present,
-        value   => $ldap_groupbase,
+        ensure => present,
+        value  => $ldap_groupbase,
     }
   }
 
   if $ldap_groupname {
     gerrit::config {
       'ldap.groupName':
-        ensure  => present,
-        value   => $ldap_groupname,
+        ensure => present,
+        value  => $ldap_groupname,
     }
   }
 
   if $ldap_grouppattern {
     gerrit::config {
       'ldap.groupPattern':
-        ensure  => present,
-        value   => $ldap_grouppattern,
+        ensure => present,
+        value  => $ldap_grouppattern,
     }
   }
 
   if $ldap_groupmemberpattern {
     gerrit::config {
       'ldap.groupMemberPattern':
-        ensure  => present,
-        value   => $ldap_groupmemberpattern,
+        ensure => present,
+        value  => $ldap_groupmemberpattern,
     }
   }
 
   if $ldap_username {
     gerrit::config {
       'ldap.username':
-        ensure  => present,
-        value   => $ldap_username,
+        ensure => present,
+        value  => $ldap_username,
     }
   }
 
   if $ldap_password {
     gerrit::config {
       'ldap.password':
-        ensure  => present,
-        value   => $ldap_password,
-        file    => "${target}/etc/secure.config",
+        ensure => present,
+        value  => $ldap_password,
+        file   => "${target}/etc/secure.config",
     }
   }
 
   if $ldap_sslverify {
     gerrit::config {
       'ldap.sslVerify':
-        ensure  => present,
-        value   => $ldap_sslverify,
+        ensure => present,
+        value  => $ldap_sslverify,
     }
   }
 
   if $ldap_timeout {
     gerrit::config {
       'ldap.readTimeout':
-        ensure  => present,
-        value   => $ldap_timeout,
+        ensure => present,
+        value  => $ldap_timeout,
     }
   }
 
