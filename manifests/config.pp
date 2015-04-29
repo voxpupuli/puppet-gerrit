@@ -1,3 +1,7 @@
+# Define gerrit::config
+#
+# set git config attributes
+#
 define gerrit::config(
   $value,
   $ensure = present,
