@@ -14,7 +14,8 @@ end
 
 PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp", "spec/**/*.pp"]
 PuppetLint.configuration.send("disable_80chars")
-PuppetLint.configuration.send("disable_inherits_from_params")
+PuppetLint.configuration.send("disable_class_inherits_from_params_class")
+PuppetLint.configuration.send("disable_autoloader_layout")
 
 task :default => [:spec_prep, :do_test, :lint]
 task :clean   => [:spec_clean]
