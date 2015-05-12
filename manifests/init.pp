@@ -230,14 +230,14 @@ class gerrit (
     package{
       $java_package:
         ensure => installed,
-    } -> Exec ['install_gerrit']
+    } -> Exec['install_gerrit']
   }
 
   if $install_java_mysql {
     package{
       $mysql_java_package:
         ensure  => installed,
-        require => Exec ['install_gerrit'],
+        require => Exec['install_gerrit'],
     } ->
     file {
       "${target}/lib/mysql-connector-java.jar" :
@@ -250,7 +250,7 @@ class gerrit (
     package{
       $git_package:
         ensure => installed,
-    } -> Exec ['install_gerrit']
+    } -> Exec['install_gerrit']
   }
 
   exec {
@@ -279,7 +279,7 @@ class gerrit (
         hasstatus => false,
         pattern   => 'GerritCodeReview',
         provider  => 'base',
-        require   => Exec ['install_gerrit'],
+        require   => Exec['install_gerrit'],
     }
   }
 
