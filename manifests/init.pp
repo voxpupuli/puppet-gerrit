@@ -353,7 +353,7 @@ class gerrit (
   if $install_gitweb {
     package {
       $gitweb_package:
-        ensure => installed
+        ensure => installed,
     }
   }
 
