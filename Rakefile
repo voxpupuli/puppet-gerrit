@@ -1,22 +1,44 @@
-require 'rubygems'
 require 'puppetlabs_spec_helper/rake_tasks'
-#require 'puppet-lint'
+require 'puppet_blacksmith/rake_tasks'
+require 'voxpupuli/release/rake_tasks'
+require 'puppet-strings/rake_tasks'
 
-require 'rake'
-require 'rspec/core/rake_task'
-require 'puppet-lint/tasks/puppet-lint'
+if RUBY_VERSION >= '2.3.0'
+  require 'rubocop/rake_task'
 
-desc "Run the tests"
-RSpec::Core::RakeTask.new(:do_test) do |t|
-  t.rspec_opts = ['--color', '-f d']
-  t.pattern = 'spec/*/*_spec.rb'
+  RuboCop::RakeTask.new(:rubocop) do |task|
+    # These make the rubocop experience maybe slightly less terrible
+    task.options = ['-D', '-S', '-E']
+  end
 end
 
-PuppetLint.configuration.ignore_paths = ["vendor/**/*.pp", "spec/**/*.pp"]
-PuppetLint.configuration.send("disable_80chars")
-PuppetLint.configuration.send("disable_class_inherits_from_params_class")
-PuppetLint.configuration.send("disable_autoloader_layout")
+PuppetLint.configuration.log_format = '%{path}:%{linenumber}:%{check}:%{KIND}:%{message}'
+PuppetLint.configuration.fail_on_warnings = true
+PuppetLint.configuration.send('relative')
+PuppetLint.configuration.send('disable_140chars')
+PuppetLint.configuration.send('disable_class_inherits_from_params_class')
+PuppetLint.configuration.send('disable_documentation')
+PuppetLint.configuration.send('disable_single_quote_string_with_variables')
 
-task :default => [:spec_prep, :do_test, :lint]
-task :clean   => [:spec_clean]
-task :test    => [:default]
+exclude_paths = %w(
+  pkg/**/*
+  vendor/**/*
+  .vendor/**/*
+  spec/**/*
+)
+PuppetLint.configuration.ignore_paths = exclude_paths
+PuppetSyntax.exclude_paths = exclude_paths
+
+desc 'Run acceptance tests'
+RSpec::Core::RakeTask.new(:acceptance) do |t|
+  t.pattern = 'spec/acceptance'
+end
+
+desc 'Run tests metadata_lint, lint, syntax, spec'
+task test: [
+  :metadata_lint,
+  :lint,
+  :syntax,
+  :spec,
+]
+# vim: syntax=ruby
