@@ -223,7 +223,7 @@ class gerrit (
       $user:
         managehome => true,
         home       => $target,
-    } -> Exec ['install_gerrit']
+    } -> Exec['install_gerrit']
   }
 
   if $install_java {
@@ -353,7 +353,7 @@ class gerrit (
   if $install_gitweb {
     package {
       $gitweb_package:
-        ensure => installed
+        ensure => installed,
     }
   }
 

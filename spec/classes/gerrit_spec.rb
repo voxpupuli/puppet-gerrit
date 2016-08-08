@@ -1,23 +1,22 @@
 require 'spec_helper'
-require 'rspec-puppet'
-require 'hiera'
-require 'facter'
 
-hiera_config = 'spec/fixtures/hiera/hiera.yaml'
+describe 'gerrit', type: :class do
+  on_supported_os.each do |os, facts|
+    context "on #{os} " do
+      let :facts do
+        facts
+      end
 
-describe 'gerrit' do
-  context 'in module gerrit' do
-    let(:hiera_config) { hiera_config }
-    let(:facts) { {
-        :osfamily => 'RedHat',
-        :operatingsystem => 'CentOS',
-        :operatingsystemrelease => '6.4',
-        :concat_basedir => '/dne',
-    } }
-    let(:params) { {
-        :source => '/tmp/gerrit.war',
-        :target => '/srv/gerrit'
-    } }
-    it { should contain_class('gerrit') }
+      describe 'gerrit' do
+        let :params do
+          {
+            source: '/tmp/gerrit.war',
+            target: '/srv/gerrit'
+          }
+        end
+        it { should compile.with_all_deps }
+        it { should contain_class('gerrit') }
+      end
+    end
   end
-end # fin describe 'gerrit'
+end
