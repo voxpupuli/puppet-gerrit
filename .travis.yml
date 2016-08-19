@@ -39,9 +39,11 @@ notifications:
   email: false
 deploy:
   provider: puppetforge
+  deploy:
+    branch: ha-bug-puppet-forge
   user: puppet
   password:
-    secure: ""
+    secure: "aJ48SUdM+Set/rGUj6zrbROv4eqGd5fZYY9+DecJ/i14UYQKIdN1xIJkRtnNe65fWNonInAaMkVNXIDdSqRQ02alsqHUIfSX/JZ6Ch5S1VWSkuromy3hGU3eernZ4C4EH+VF5pwy0TVYYFZlxOHV/c6HDg5bGMq2ATDhiq1B61o="
   on:
     tags: true
     # all_branches is required to use tags
