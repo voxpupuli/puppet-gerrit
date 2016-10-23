@@ -1,5 +1,12 @@
 # Gerrit module for Puppet
 
+[![Build Status](https://travis-ci.org/voxpupuli/puppet-gerrit.png?branch=master)](https://travis-ci.org/voxpupuli/puppet-gerrit)
+[![Code Coverage](https://coveralls.io/repos/github/voxpupuli/puppet-gerrit/badge.svg?branch=master)](https://coveralls.io/github/voxpupuli/puppet-gerrit)
+[![Puppet Forge](https://img.shields.io/puppetforge/v/puppet/gerrit.svg)](https://forge.puppetlabs.com/puppet/gerrit)
+[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/puppet/gerrit.svg)](https://forge.puppetlabs.com/puppet/gerrit)
+[![Puppet Forge - endorsement](https://img.shields.io/puppetforge/e/puppet/gerrit.svg)](https://forge.puppetlabs.com/puppet/gerrit)
+[![Puppet Forge - scores](https://img.shields.io/puppetforge/f/puppet/gerrit.svg)](https://forge.puppetlabs.com/puppet/gerrit)
+
 #### Table of Contents
 
 1. [Overview](#overview)
