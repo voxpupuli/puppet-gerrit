@@ -1,6 +1,6 @@
 {
   "name": "puppet-gerrit",
-  "version": "0.4.1-rc0",
+  "version": "1.0.0-rc0",
   "author": "Vox Pupuli",
   "summary": "Web based code review and project management for Git based projects.",
   "license": "MIT",
@@ -17,14 +17,13 @@
   "requirements": [
     {
       "name": "puppet",
-      "version_requirement": ">= 3.8.7 < 5.0.0"
+      "version_requirement": ">= 4.6.1 < 5.0.0"
     }
   ],
   "operatingsystem_support": [
     {
       "operatingsystem": "CentOS",
       "operatingsystemrelease": [
-        "5.0",
         "6.0",
         "7.0"
       ]
@@ -32,7 +31,6 @@
     {
       "operatingsystem": "RedHat",
       "operatingsystemrelease": [
-        "5.0",
         "6.0",
         "7.0"
       ]
@@ -40,7 +38,6 @@
     {
       "operatingsystem": "Debian",
       "operatingsystemrelease": [
-        "6.0",
         "7.0",
         "8.0"
       ]
@@ -48,8 +45,6 @@
     {
       "operatingsystem": "Ubuntu",
       "operatingsystemrelease": [
-        "10.04",
-        "12.04",
         "14.04",
         "16.04"
       ]
