@@ -238,8 +238,8 @@ class gerrit (
       $mysql_java_package:
         ensure  => installed,
         require => Exec['install_gerrit'],
-    } ->
-    file {
+    }
+    -> file {
       "${target}/lib/mysql-connector-java.jar" :
         ensure => link,
         target => $mysql_java_connector,
