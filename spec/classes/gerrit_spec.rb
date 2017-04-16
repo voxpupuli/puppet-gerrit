@@ -14,6 +14,7 @@ describe 'gerrit', type: :class do
             target: '/srv/gerrit'
           }
         end
+
         it { is_expected.to compile.with_all_deps }
         it { is_expected.to contain_class('gerrit') }
         it { is_expected.to contain_class('gerrit::params') }
