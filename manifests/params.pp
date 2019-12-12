@@ -13,7 +13,7 @@
 class gerrit::params{
 
 
-  case $::operatingsystem {
+  case $facts['os']['name'] {
     /(?i:centos|redhat|scientific|oel|amazon|fedora)/: {
       $git_package          = 'git'
       $gitweb_cgi_path      = '/var/www/git/gitweb.cgi'
@@ -31,7 +31,7 @@ class gerrit::params{
       $mysql_java_package   = 'libmysql-java'
     }
     default: {
-      fail "Operatingsystem ${::operatingsystem} is not supported."
+      fail "Operatingsystem ${facts['os']['name']} is not supported."
     }
   }
 
