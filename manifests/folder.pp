@@ -2,11 +2,10 @@
 #
 # define to create directories inside gerrit target path
 #
-define gerrit::folder(
+define gerrit::folder (
   $ensure   = 'directory',
-){
-
-  file{
+) {
+  file {
     "${gerrit::target}/${name}":
       ensure  => $ensure,
       owner   => $gerrit::user,
@@ -14,5 +13,4 @@ define gerrit::folder(
       mode    => '0755',
       require => Exec['install_gerrit'],
   }
-
 }

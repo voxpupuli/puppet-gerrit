@@ -10,9 +10,7 @@
 #
 # Copyright 2014 Julien Pivotto
 #
-class gerrit::params{
-
-
+class gerrit::params {
   case $facts['os']['name'] {
     /(?i:centos|redhat|scientific|oel|amazon|fedora)/: {
       $git_package          = 'git'
@@ -34,5 +32,4 @@ class gerrit::params{
       fail "Operatingsystem ${facts['os']['name']} is not supported."
     }
   }
-
 }

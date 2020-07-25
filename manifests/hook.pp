@@ -2,13 +2,12 @@
 #
 # define to create gerrit hook
 #
-define gerrit::hook(
+define gerrit::hook (
   $ensure   = 'present',
   $source   = undef,
   $content  = undef,
-){
-
-  file{
+) {
+  file {
     "${gerrit::target}/hooks/${name}":
       ensure  => $ensure,
       source  => $source,
@@ -18,5 +17,4 @@ define gerrit::hook(
       mode    => '0700',
       require => [Exec['install_gerrit'], Gerrit::Folder['hooks']],
   }
-
 }
