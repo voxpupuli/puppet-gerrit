@@ -217,7 +217,6 @@ class gerrit (
   $user                     = 'gerrit',
   $extra_folders            = ['hooks', 'plugins'],
 ) inherits gerrit::params {
-
   if $install_user {
     user {
       $user:
@@ -227,14 +226,14 @@ class gerrit (
   }
 
   if $install_java {
-    package{
+    package {
       $java_package:
         ensure => installed,
     } -> Exec['install_gerrit']
   }
 
   if $install_java_mysql {
-    package{
+    package {
       $mysql_java_package:
         ensure  => installed,
         require => Exec['install_gerrit'],
@@ -247,7 +246,7 @@ class gerrit (
   }
 
   if $install_git {
-    package{
+    package {
       $git_package:
         ensure => installed,
     } -> Exec['install_gerrit']
@@ -389,7 +388,7 @@ class gerrit (
     }
   }
 
-  if $ldap_accountfullname{
+  if $ldap_accountfullname {
     gerrit::config {
       'ldap.accountFullName':
         ensure => present,
@@ -397,8 +396,7 @@ class gerrit (
     }
   }
 
-
-  if $ldap_accountmemberfield{
+  if $ldap_accountmemberfield {
     gerrit::config {
       'ldap.accountMemberField':
         ensure => present,
@@ -406,8 +404,7 @@ class gerrit (
     }
   }
 
-
-  if $ldap_accountemailaddress{
+  if $ldap_accountemailaddress {
     gerrit::config {
       'ldap.accountEmailAddress':
         ensure => present,
@@ -487,5 +484,4 @@ class gerrit (
         value  => $ldap_timeout,
     }
   }
-
 }

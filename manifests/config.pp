@@ -2,12 +2,11 @@
 #
 # set git config attributes
 #
-define gerrit::config(
+define gerrit::config (
   $value,
   $ensure = present,
   $file   = "${gerrit::target}/etc/gerrit.config"
-){
-
+) {
   if is_array($value) {
     # Check if the existing value in the config is set to exactly the right
     # combination of characters.  We do this by using a gross perl one-liner to
@@ -47,11 +46,9 @@ define gerrit::config(
         path    => $::path,
         require => Exec['install_gerrit'],
     }
-
   }
 
   if $gerrit::manage_service {
     Exec["config_${name}"] ~> Exec['reload_gerrit']
   }
-
 }

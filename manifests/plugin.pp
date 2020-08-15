@@ -2,12 +2,11 @@
 #
 # define to install gerrit plugins
 #
-define gerrit::plugin(
+define gerrit::plugin (
   $source,
   $ensure = 'present',
-){
-
-  file{
+) {
+  file {
     "${gerrit::target}/plugins/${name}":
       ensure  => $ensure,
       source  => $source,
@@ -16,5 +15,4 @@ define gerrit::plugin(
       mode    => '0700',
       require => [Exec['install_gerrit'], Gerrit::Folder['plugins']],
   }
-
 }
