@@ -1,7 +1,9 @@
-# Define gerrit::folder
+# @summary Define to create directories inside gerrit target path
 #
-# define to create directories inside gerrit target path
-#
+# @param name
+#   The folder name
+# @param ensure
+#   Manage the state of this directory inside gerrit target path
 define gerrit::folder (
   $ensure   = 'directory',
 ) {

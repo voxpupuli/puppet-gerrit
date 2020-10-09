@@ -1,15 +1,6 @@
-# == Class: gerrit::params
+# @summary It sets variables according to platform.
 #
-# Only used internally to support multiple operating systems
-#
-# === Authors
-#
-# Julien Pivotto <roidelapluie@inuits.eu>
-#
-# === Copyright
-#
-# Copyright 2014 Julien Pivotto
-#
+# @api private
 class gerrit::params {
   case $facts['os']['name'] {
     /(?i:centos|redhat|scientific|oel|amazon|fedora)/: {

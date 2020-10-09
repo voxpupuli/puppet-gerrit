@@ -1,177 +1,110 @@
-# == Class: gerrit
+# @summary Install and configure Gerrit
 #
-# Full description of class gerrit here.
+# @author Julien Pivotto <roidelapluie@inuits.eu>
 #
-# === Parameters
-#
-# Document parameters here.
-#
-# [*source*]
-#   the path to the gerrit.war file
-#
-# [*target*]
-#   the path to install gerrit to
-#
-# [*auth_type*]
-#   auth type (ldap, http, ...)
-#
-# [*canonicalweburl*]
-#   canonical web url used in several places by gerrit
-#
-# [*httpd_protocol*]
+# @param source
+#   The path to the gerrit.war file
+# @param target
+#   The path to install gerrit to
+# @param auth_type
+#   Auth type (ldap, http, ...)
+# @param canonicalweburl
+#   Canonical web url used in several places by gerrit
+# @param httpd_protocol
 #   The protocol used by gerrit.
 #   Options : http, https, proxy-http, proxy-https
-#
-# [*httpd_hostname*]
+# @param httpd_hostname
 #   The hostname on wich gerrit will be reachable. Default any.
-#
-# [*httpd_port*]
+# @param httpd_port
 #   The port on wich gerrit will be reachable
-#
-# [*configure_gitweb*]
-#   boolean. should we adapt gerrit configuration to support gitweb
-#
-# [*database_backend*]
-#   database backend. currently mysql and h2 are supported
-#
-# [*database_hostname*]
-#   database hostname (mysql)
-#
-# [*database_name*]
-#   database name (h2 and mysql)
-#
-# [*database_password*]
-#   database name (mysql)
-#
-# [*database_username*]
-#   database username (mysql)
-#
-# [*download_scheme*]
-#   download scheme (ssh, http, ...)
-#
-# [*git_package*]
-#   the name of the git package
-#
-# [*gitweb_cgi_path*]
-#   path to the gitweb cgi executable
-#
-# [*gitweb_package*]
-#   the name of the gitweb package
-#
-# [*java_package*]
-#   the name of the java package
-#
-# [*create_user*]
-#   boolean. should this module create the user.
-#
-# [*install_git*]
-#   boolean. should this module install git.
-#
-# [*install_gitweb*]
-#   boolean. should this module install gitweb.
-#
-# [*install_java*]
-#   boolean. should this module install java.
-#
-# [*install_java_mysql*]
-#   boolean. should this module install java mysql connector.
-#
-# [*install_user*]
-#   boolean. should this module setup the gerrit user
-#
-# [*ldap_accountbase*]
+# @param configure_gitweb
+#   Should we adapt gerrit configuration to support gitweb. Boolean.
+# @param database_backend
+#   Database backend. currently mysql and h2 are supported
+# @param database_hostname
+#   Database hostname (mysql)
+# @param database_name
+#   Database name (h2 and mysql)
+# @param database_password
+#   Database name (mysql)
+# @param database_username
+#   Database username (mysql)
+# @param download_scheme
+#   Download scheme (ssh, http, ...)
+# @param git_package
+#   The name of the git package
+# @param gitweb_cgi_path
+#   Path to the gitweb cgi executable
+# @param gitweb_package
+#   The name of the gitweb package
+# @param java_package
+#   The name of the java package
+# @param install_user
+#   Should this module create the user. Boolean
+# @param install_git
+#   Should this module install git. Boolean
+# @param install_gitweb
+#   Should this module install gitweb. Boolean
+# @param install_java
+#   Should this module install java. Boolean
+# @param install_java_mysql
+#   Should this module install java mysql connector. Boolean
+# @param ldap_accountbase
 #   The base dn for the accounts
-#
-# [*ldap_accountpattern*]
+# @param ldap_accountpattern
 #   The query pattern to use when searching for a user account.
 #   format like "(&(objectClass=inetOrgPerson)(cn=${username}))"
-#
-# [*ldap_accountemailaddress*]
+# @param ldap_accountemailaddress
 #   The name of an attribute on the user account object which contains the
-#   user's Internet email address
-#   format like "mail"
-#
-# [*ldap_accountfullname*]
+#   user's Internet email address format like "mail"
+# @param ldap_accountfullname
 #   The name of an attribute on the user account object which contains the
-#   user's fullname
-#   format like "displayName"
-#
-# [*ldap_accountfullname*]
+#   groups the user is part of format like "memberOf"
+# @param ldap_accountmemberfield
 #   The name of an attribute on the user account object which contains the
-#   groups the user is part of
-#   format like "memberOf"
-#
-# [*ldap_accountsshusername*]
-#   The Name of an attribute on the user account object which contains the
-#   initial value for the user's SSH username field in Gerrit
-#   format like "cn"
-#
-# [*ldap_groupbase*]
+#   groups the user is part of. Typically used for Active Directory and FreeIPA servers.
+# @param ldap_accountsshusername
+#   The name of an attribute on the user account object which contains the
+#   initial value for the user's SSH username field in Gerrit format like "cn"
+# @param ldap_groupbase
 #   The base dn for the groups
-#
-# [*ldap_groupname*]
+# @param ldap_groupname
 #   Name of the attribute on the group object which contains the value to
 #   use as the group name in Gerrit
-#
-# [*ldap_grouppattern*]
+# @param ldap_grouppattern
 #   Query pattern used when searching for an LDAP group to connect to a
 #   Gerrit group.
-#
-# [*ldap_groupmemberpattern*]
+# @param ldap_groupmemberpattern
 #   Query pattern to use when searching for the groups that a user account
 #   is currently a member of
-#
-# [*ldap_password*]
-#   the ldap password to bind to
-#
-# [*ldap_server*]
-#   the ldap server address
-#
-# [*ldap_sslverify*]
+# @param ldap_password
+#   The ldap password to bind to
+# @param ldap_server
+#   The ldap server address
+# @param ldap_sslverify
 #   If false and $ldap_server is an ldaps:// style URL, Gerrit will not verify
 #   the server certificate when it connects to perform a query.
-#
-# [*ldap_timeout*]
+# @param ldap_timeout
 #   The read timeout for an LDAP operation. The value is in the usual time-unit
 #   format like "1 s", "100 ms", etc..
-#
-# [*ldap_username*]
-#   the ldap user to bind to
-#
-# [*manage_service*]
-#   boolean. should this module launch the service
-#
-# [*mysql_java_connector*]
-#   the name of the java connector file
-#
-# [*mysql_java_package*]
-#   the name of the java connector package
-#
-# [*manage_service*]
-#   boolean. should this module launch the service
-#
-# [*user*]
-#   the user used to install gerrit
-#
-# [*extra_folders*]
+# @param ldap_username
+#   The ldap user to bind to
+# @param mysql_java_connector
+#  The name of the java connector file
+# @param mysql_java_package
+#   The name of the java connector package
+# @param manage_service
+#   Should this module launch the service.
+# @param user
+#   The user used to install gerrit
+# @param extra_folders
 #   Extra folder to create on gerrit home directory
 #
-# === Examples
-#
-#  class {
-#   gerrit:
+# @example Install gerrit
+#  class { 'gerrit':
 #     source => '/vagrant/gerrit-2.8.1.war',
 #     target => '/opt/gerrit'
 #  }
-#
-# === Authors
-#
-# Julien Pivotto <roidelapluie@inuits.eu>
-#
-# === Copyright
-#
-# Copyright 2014 Julien Pivotto
-#
 class gerrit (
   $source,
   $target,

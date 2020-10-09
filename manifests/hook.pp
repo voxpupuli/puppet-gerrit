@@ -1,7 +1,13 @@
-# Define gerrit::hook
+# @summary Define to create gerrit hook
 #
-# define to create gerrit hook
-#
+# @param name
+#   The hook name
+# @param ensure
+#   Manage the state of this gerrit hook.
+# @param source
+#   The source of this hook. Can be any value valid for the `file` `source` parameter.
+# @param content
+#   The content of this hook. Can be any value valid for the `file` `content` parameter.
 define gerrit::hook (
   $ensure   = 'present',
   $source   = undef,

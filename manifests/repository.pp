@@ -1,7 +1,7 @@
-# Define gerrit::repository
+# @summary Define to create empty git bare repositories
 #
-# define to create empty git bare repositories
-#
+# @param name
+#   The repository name
 define gerrit::repository {
   $directory = "${gerrit::target}/git/${name}.git"
 
