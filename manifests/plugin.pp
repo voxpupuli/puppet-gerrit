@@ -1,7 +1,11 @@
-# Define gerrit::plugin
+# @summary Define to install gerrit plugins
 #
-# define to install gerrit plugins
-#
+# @param name
+#   The plugin name
+# @param source
+#   The source of this plugins. Can be any value valid for the `file` `source` parameter.
+# @param ensure
+#   Manage the state of this gerrit plugin.
 define gerrit::plugin (
   $source,
   $ensure = 'present',

@@ -1,7 +1,13 @@
-# Define gerrit::config
+# @summary Set git config attributes
 #
-# set git config attributes
-#
+# @param name
+#   The attribute name
+# @param value
+#   The value of thie git config attribute.
+# @param ensure
+#   Manage the state of this git config attribute.
+# @param file
+#   The file in which the git config attribute should be set.
 define gerrit::config (
   $value,
   $ensure = present,
