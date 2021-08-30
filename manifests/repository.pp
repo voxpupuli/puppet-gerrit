@@ -9,7 +9,7 @@ define gerrit::repository {
     command => "mkdir -p '${directory}' && cd '${directory}' && git init --bare",
     creates => "${directory}/config",
     user    => $gerrit::user,
-    path    => $::path,
+    path    => $facts['path'],
     require => Exec['install_gerrit'],
   }
 

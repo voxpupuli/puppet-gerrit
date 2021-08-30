@@ -190,7 +190,7 @@ class gerrit (
       command => "java -jar ${source} init -d ${target}",
       creates => "${target}/bin/gerrit.sh",
       user    => $user,
-      path    => $::path,
+      path    => $facts['path'],
   }
 
   exec {
@@ -198,7 +198,7 @@ class gerrit (
       command     => "java -jar ${target}/bin/gerrit.war init -d ${target}",
       refreshonly => true,
       user        => $user,
-      path        => $::path,
+      path        => $facts['path'],
       notify      => Service['gerrit'],
   }
 
