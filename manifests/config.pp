@@ -26,7 +26,7 @@ define gerrit::config (
     exec { "config_${name}_empty":
       command => "git config -f ${file} --unset-all \"${name}\"",
       unless  => "git config -f ${file} --get-all \"${name}\" | ${compare}",
-      path    => $::path,
+      path    => $facts['path'],
       require => Exec['install_gerrit'],
       returns => [0, 5],
     }
@@ -40,7 +40,7 @@ define gerrit::config (
     $all_commands = join($suffixed_commands, '; ')
     exec { "config_${name}":
       command     => $all_commands,
-      path        => $::path,
+      path        => $facts['path'],
       refreshonly => true,
       subscribe   => Exec["config_${name}_empty"],
     }
@@ -49,7 +49,7 @@ define gerrit::config (
       "config_${name}":
         command => "git config -f ${file} \"${name}\" \'${value}\'",
         unless  => "test \"$(git config -f ${file} \"${name}\")\" = \'${value}\'",
-        path    => $::path,
+        path    => $facts['path'],
         require => Exec['install_gerrit'],
     }
   }
