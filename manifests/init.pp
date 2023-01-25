@@ -193,16 +193,16 @@ class gerrit (
       path    => $facts['path'],
   }
 
-  exec {
-    'reload_gerrit':
-      command     => "java -jar ${target}/bin/gerrit.war init -d ${target}",
-      refreshonly => true,
-      user        => $user,
-      path        => $facts['path'],
-      notify      => Service['gerrit'],
-  }
-
   if $manage_service {
+    exec {
+      'reload_gerrit':
+        command     => "${target}/bin/gerrit.sh stop && java -jar ${target}/bin/gerrit.war init -d ${target}",
+        refreshonly => true,
+        user        => $user,
+        path        => $facts['path'],
+        notify      => Service['gerrit'],
+    }
+
     service {
       'gerrit':
         ensure    => running,
@@ -219,6 +219,7 @@ class gerrit (
 
   Gerrit::Config {
     file    => "${target}/etc/gerrit.config",
+    user    => $user,
   }
 
   gerrit::config {
@@ -399,6 +400,7 @@ class gerrit (
         ensure => present,
         value  => $ldap_password,
         file   => "${target}/etc/secure.config",
+        user    => $user,
     }
   }
 

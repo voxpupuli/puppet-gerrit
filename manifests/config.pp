@@ -11,7 +11,8 @@
 define gerrit::config (
   $value,
   $ensure = present,
-  $file   = "${gerrit::target}/etc/gerrit.config"
+  $file   = "${gerrit::target}/etc/gerrit.config",
+  $user   = 'gerrit'
 ) {
   if is_array($value) {
     # Check if the existing value in the config is set to exactly the right
@@ -29,6 +30,7 @@ define gerrit::config (
       path    => $facts['path'],
       require => Exec['install_gerrit'],
       returns => [0, 5],
+      user    => $user,
     }
 
     # We want to run all these commands together because we can't use puppet
@@ -43,6 +45,7 @@ define gerrit::config (
       path        => $facts['path'],
       refreshonly => true,
       subscribe   => Exec["config_${name}_empty"],
+      user        => $user,
     }
   } else {
     exec {
@@ -51,6 +54,7 @@ define gerrit::config (
         unless  => "test \"$(git config -f ${file} \"${name}\")\" = \'${value}\'",
         path    => $facts['path'],
         require => Exec['install_gerrit'],
+        user    => $user,
     }
   }
 
