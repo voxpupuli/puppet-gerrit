@@ -8,6 +8,8 @@
 #   Manage the state of this git config attribute.
 # @param file
 #   The file in which the git config attribute should be set.
+# @param user
+#   The owner of configuration
 define gerrit::config (
   $value,
   $ensure = present,
