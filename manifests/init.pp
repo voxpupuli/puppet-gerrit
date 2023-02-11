@@ -89,6 +89,16 @@
 #   format like "1 s", "100 ms", etc..
 # @param ldap_username
 #   The ldap user to bind to
+# @param smtp_server
+#   The SMTP server address
+# @param smtp_port
+#   The SMTP server port
+# @param smtp_encryption
+#   The SMTP encryption
+# @param smtp_user
+#   The SMTP user
+# @param smtp_password
+#   The SMTP password
 # @param mysql_java_connector
 #  The name of the java connector file
 # @param mysql_java_package
@@ -144,6 +154,11 @@ class gerrit (
   $ldap_sslverify           = undef,
   $ldap_timeout             = undef,
   $ldap_username            = undef,
+  $smtp_server              = undef,
+  $smtp_port                = undef,
+  $smtp_encryption          = undef,
+  $smtp_user                = undef,
+  $smtp_password            = undef,
   $manage_service           = true,
   $mysql_java_connector     = $gerrit::params::mysql_java_connector,
   $mysql_java_package       = $gerrit::params::mysql_java_package,
@@ -193,16 +208,16 @@ class gerrit (
       path    => $facts['path'],
   }
 
-  exec {
-    'reload_gerrit':
-      command     => "java -jar ${target}/bin/gerrit.war init -d ${target}",
-      refreshonly => true,
-      user        => $user,
-      path        => $facts['path'],
-      notify      => Service['gerrit'],
-  }
-
   if $manage_service {
+    exec {
+      'reload_gerrit':
+        command     => "${target}/bin/gerrit.sh stop && java -jar ${target}/bin/gerrit.war init -d ${target}",
+        refreshonly => true,
+        user        => $user,
+        path        => $facts['path'],
+        notify      => Service['gerrit'],
+    }
+
     service {
       'gerrit':
         ensure    => running,
@@ -219,12 +234,13 @@ class gerrit (
 
   Gerrit::Config {
     file    => "${target}/etc/gerrit.config",
+    user    => $user,
   }
 
   gerrit::config {
     'httpd.listenUrl':
       ensure => present,
-      value  => "${httpd_protocol}://${httpd_hostname}:${httpd_port}",
+      value  => "${httpd_protocol}://${httpd_hostname}:${httpd_port}/",
   }
 
   gerrit::config {
@@ -399,6 +415,7 @@ class gerrit (
         ensure => present,
         value  => $ldap_password,
         file   => "${target}/etc/secure.config",
+        user   => $user,
     }
   }
 
@@ -415,6 +432,48 @@ class gerrit (
       'ldap.readTimeout':
         ensure => present,
         value  => $ldap_timeout,
+    }
+  }
+
+  if $smtp_server {
+    gerrit::config {
+      'sendemail.smtpServer':
+        ensure => present,
+        value  => $smtp_server,
+    }
+  }
+
+  if $smtp_port {
+    gerrit::config {
+      'sendemail.smtpServerPort':
+        ensure => present,
+        value  => $smtp_port,
+    }
+  }
+
+  if $smtp_encryption {
+    gerrit::config {
+      'sendemail.smtpEncryption':
+        ensure => present,
+        value  => $smtp_encryption,
+    }
+  }
+
+  if $smtp_user {
+    gerrit::config {
+      'sendemail.smtpUser':
+        ensure => present,
+        value  => $smtp_user,
+    }
+  }
+
+  if $smtp_password {
+    gerrit::config {
+      'sendemail.smtpPass':
+        ensure => present,
+        value  => $smtp_password,
+        file   => "${target}/etc/secure.config",
+        user   => $user,
     }
   }
 }
