@@ -16,15 +16,15 @@
 
 ### Defined types
 
-* [`gerrit::config`](#gerritconfig): Set git config attributes
-* [`gerrit::folder`](#gerritfolder): Define to create directories inside gerrit target path
-* [`gerrit::hook`](#gerrithook): Define to create gerrit hook
-* [`gerrit::plugin`](#gerritplugin): Define to install gerrit plugins
-* [`gerrit::repository`](#gerritrepository): Define to create empty git bare repositories
+* [`gerrit::config`](#gerrit--config): Set git config attributes
+* [`gerrit::folder`](#gerrit--folder): Define to create directories inside gerrit target path
+* [`gerrit::hook`](#gerrit--hook): Define to create gerrit hook
+* [`gerrit::plugin`](#gerrit--plugin): Define to install gerrit plugins
+* [`gerrit::repository`](#gerrit--repository): Define to create empty git bare repositories
 
 ## Classes
 
-### `gerrit`
+### <a name="gerrit"></a>`gerrit`
 
 Install and configure Gerrit
 
@@ -41,21 +41,70 @@ class { 'gerrit':
 
 #### Parameters
 
-The following parameters are available in the `gerrit` class.
+The following parameters are available in the `gerrit` class:
 
-##### `source`
+* [`source`](#-gerrit--source)
+* [`target`](#-gerrit--target)
+* [`auth_type`](#-gerrit--auth_type)
+* [`canonicalweburl`](#-gerrit--canonicalweburl)
+* [`httpd_protocol`](#-gerrit--httpd_protocol)
+* [`httpd_hostname`](#-gerrit--httpd_hostname)
+* [`httpd_port`](#-gerrit--httpd_port)
+* [`configure_gitweb`](#-gerrit--configure_gitweb)
+* [`database_backend`](#-gerrit--database_backend)
+* [`database_hostname`](#-gerrit--database_hostname)
+* [`database_name`](#-gerrit--database_name)
+* [`database_password`](#-gerrit--database_password)
+* [`database_username`](#-gerrit--database_username)
+* [`download_scheme`](#-gerrit--download_scheme)
+* [`git_package`](#-gerrit--git_package)
+* [`gitweb_cgi_path`](#-gerrit--gitweb_cgi_path)
+* [`gitweb_package`](#-gerrit--gitweb_package)
+* [`java_package`](#-gerrit--java_package)
+* [`install_user`](#-gerrit--install_user)
+* [`install_git`](#-gerrit--install_git)
+* [`install_gitweb`](#-gerrit--install_gitweb)
+* [`install_java`](#-gerrit--install_java)
+* [`install_java_mysql`](#-gerrit--install_java_mysql)
+* [`ldap_accountbase`](#-gerrit--ldap_accountbase)
+* [`ldap_accountpattern`](#-gerrit--ldap_accountpattern)
+* [`ldap_accountemailaddress`](#-gerrit--ldap_accountemailaddress)
+* [`ldap_accountfullname`](#-gerrit--ldap_accountfullname)
+* [`ldap_accountmemberfield`](#-gerrit--ldap_accountmemberfield)
+* [`ldap_accountsshusername`](#-gerrit--ldap_accountsshusername)
+* [`ldap_groupbase`](#-gerrit--ldap_groupbase)
+* [`ldap_groupname`](#-gerrit--ldap_groupname)
+* [`ldap_grouppattern`](#-gerrit--ldap_grouppattern)
+* [`ldap_groupmemberpattern`](#-gerrit--ldap_groupmemberpattern)
+* [`ldap_password`](#-gerrit--ldap_password)
+* [`ldap_server`](#-gerrit--ldap_server)
+* [`ldap_sslverify`](#-gerrit--ldap_sslverify)
+* [`ldap_timeout`](#-gerrit--ldap_timeout)
+* [`ldap_username`](#-gerrit--ldap_username)
+* [`smtp_server`](#-gerrit--smtp_server)
+* [`smtp_port`](#-gerrit--smtp_port)
+* [`smtp_encryption`](#-gerrit--smtp_encryption)
+* [`smtp_user`](#-gerrit--smtp_user)
+* [`smtp_password`](#-gerrit--smtp_password)
+* [`mysql_java_connector`](#-gerrit--mysql_java_connector)
+* [`mysql_java_package`](#-gerrit--mysql_java_package)
+* [`manage_service`](#-gerrit--manage_service)
+* [`user`](#-gerrit--user)
+* [`extra_folders`](#-gerrit--extra_folders)
+
+##### <a name="-gerrit--source"></a>`source`
 
 Data type: `Any`
 
 The path to the gerrit.war file
 
-##### `target`
+##### <a name="-gerrit--target"></a>`target`
 
 Data type: `Any`
 
 The path to install gerrit to
 
-##### `auth_type`
+##### <a name="-gerrit--auth_type"></a>`auth_type`
 
 Data type: `Any`
 
@@ -63,7 +112,7 @@ Auth type (ldap, http, ...)
 
 Default value: `'OPENID'`
 
-##### `canonicalweburl`
+##### <a name="-gerrit--canonicalweburl"></a>`canonicalweburl`
 
 Data type: `Any`
 
@@ -71,7 +120,7 @@ Canonical web url used in several places by gerrit
 
 Default value: `'http://127.0.0.1:8080/'`
 
-##### `httpd_protocol`
+##### <a name="-gerrit--httpd_protocol"></a>`httpd_protocol`
 
 Data type: `Any`
 
@@ -80,7 +129,7 @@ Options : http, https, proxy-http, proxy-https
 
 Default value: `'http'`
 
-##### `httpd_hostname`
+##### <a name="-gerrit--httpd_hostname"></a>`httpd_hostname`
 
 Data type: `Any`
 
@@ -88,7 +137,7 @@ The hostname on wich gerrit will be reachable. Default any.
 
 Default value: `'*'`
 
-##### `httpd_port`
+##### <a name="-gerrit--httpd_port"></a>`httpd_port`
 
 Data type: `Any`
 
@@ -96,15 +145,15 @@ The port on wich gerrit will be reachable
 
 Default value: `8080`
 
-##### `configure_gitweb`
+##### <a name="-gerrit--configure_gitweb"></a>`configure_gitweb`
 
 Data type: `Any`
 
 Should we adapt gerrit configuration to support gitweb. Boolean.
 
-Default value: ``true``
+Default value: `true`
 
-##### `database_backend`
+##### <a name="-gerrit--database_backend"></a>`database_backend`
 
 Data type: `Any`
 
@@ -112,15 +161,15 @@ Database backend. currently mysql and h2 are supported
 
 Default value: `'h2'`
 
-##### `database_hostname`
+##### <a name="-gerrit--database_hostname"></a>`database_hostname`
 
 Data type: `Any`
 
 Database hostname (mysql)
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `database_name`
+##### <a name="-gerrit--database_name"></a>`database_name`
 
 Data type: `Any`
 
@@ -128,23 +177,23 @@ Database name (h2 and mysql)
 
 Default value: `'db/ReviewDB'`
 
-##### `database_password`
+##### <a name="-gerrit--database_password"></a>`database_password`
 
 Data type: `Any`
 
 Database name (mysql)
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `database_username`
+##### <a name="-gerrit--database_username"></a>`database_username`
 
 Data type: `Any`
 
 Database username (mysql)
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `download_scheme`
+##### <a name="-gerrit--download_scheme"></a>`download_scheme`
 
 Data type: `Any`
 
@@ -152,7 +201,7 @@ Download scheme (ssh, http, ...)
 
 Default value: `['ssh', 'anon_http', 'http']`
 
-##### `git_package`
+##### <a name="-gerrit--git_package"></a>`git_package`
 
 Data type: `Any`
 
@@ -160,7 +209,7 @@ The name of the git package
 
 Default value: `$gerrit::params::git_package`
 
-##### `gitweb_cgi_path`
+##### <a name="-gerrit--gitweb_cgi_path"></a>`gitweb_cgi_path`
 
 Data type: `Any`
 
@@ -168,7 +217,7 @@ Path to the gitweb cgi executable
 
 Default value: `$gerrit::params::gitweb_cgi_path`
 
-##### `gitweb_package`
+##### <a name="-gerrit--gitweb_package"></a>`gitweb_package`
 
 Data type: `Any`
 
@@ -176,7 +225,7 @@ The name of the gitweb package
 
 Default value: `$gerrit::params::gitweb_package`
 
-##### `java_package`
+##### <a name="-gerrit--java_package"></a>`java_package`
 
 Data type: `Any`
 
@@ -184,177 +233,217 @@ The name of the java package
 
 Default value: `$gerrit::params::java_package`
 
-##### `install_user`
+##### <a name="-gerrit--install_user"></a>`install_user`
 
 Data type: `Any`
 
 Should this module create the user. Boolean
 
-Default value: ``true``
+Default value: `true`
 
-##### `install_git`
+##### <a name="-gerrit--install_git"></a>`install_git`
 
 Data type: `Any`
 
 Should this module install git. Boolean
 
-Default value: ``true``
+Default value: `true`
 
-##### `install_gitweb`
+##### <a name="-gerrit--install_gitweb"></a>`install_gitweb`
 
 Data type: `Any`
 
 Should this module install gitweb. Boolean
 
-Default value: ``true``
+Default value: `true`
 
-##### `install_java`
+##### <a name="-gerrit--install_java"></a>`install_java`
 
 Data type: `Any`
 
 Should this module install java. Boolean
 
-Default value: ``true``
+Default value: `true`
 
-##### `install_java_mysql`
+##### <a name="-gerrit--install_java_mysql"></a>`install_java_mysql`
 
 Data type: `Any`
 
 Should this module install java mysql connector. Boolean
 
-Default value: ``true``
+Default value: `true`
 
-##### `ldap_accountbase`
+##### <a name="-gerrit--ldap_accountbase"></a>`ldap_accountbase`
 
 Data type: `Any`
 
 The base dn for the accounts
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_accountpattern`
+##### <a name="-gerrit--ldap_accountpattern"></a>`ldap_accountpattern`
 
 Data type: `Any`
 
 The query pattern to use when searching for a user account.
 format like "(&(objectClass=inetOrgPerson)(cn=${username}))"
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_accountemailaddress`
+##### <a name="-gerrit--ldap_accountemailaddress"></a>`ldap_accountemailaddress`
 
 Data type: `Any`
 
 The name of an attribute on the user account object which contains the
 user's Internet email address format like "mail"
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_accountfullname`
+##### <a name="-gerrit--ldap_accountfullname"></a>`ldap_accountfullname`
 
 Data type: `Any`
 
 The name of an attribute on the user account object which contains the
 groups the user is part of format like "memberOf"
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_accountmemberfield`
+##### <a name="-gerrit--ldap_accountmemberfield"></a>`ldap_accountmemberfield`
 
 Data type: `Any`
 
 The name of an attribute on the user account object which contains the
 groups the user is part of. Typically used for Active Directory and FreeIPA servers.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_accountsshusername`
+##### <a name="-gerrit--ldap_accountsshusername"></a>`ldap_accountsshusername`
 
 Data type: `Any`
 
 The name of an attribute on the user account object which contains the
 initial value for the user's SSH username field in Gerrit format like "cn"
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_groupbase`
+##### <a name="-gerrit--ldap_groupbase"></a>`ldap_groupbase`
 
 Data type: `Any`
 
 The base dn for the groups
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_groupname`
+##### <a name="-gerrit--ldap_groupname"></a>`ldap_groupname`
 
 Data type: `Any`
 
 Name of the attribute on the group object which contains the value to
 use as the group name in Gerrit
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_grouppattern`
+##### <a name="-gerrit--ldap_grouppattern"></a>`ldap_grouppattern`
 
 Data type: `Any`
 
 Query pattern used when searching for an LDAP group to connect to a
 Gerrit group.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_groupmemberpattern`
+##### <a name="-gerrit--ldap_groupmemberpattern"></a>`ldap_groupmemberpattern`
 
 Data type: `Any`
 
 Query pattern to use when searching for the groups that a user account
 is currently a member of
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_password`
+##### <a name="-gerrit--ldap_password"></a>`ldap_password`
 
 Data type: `Any`
 
 The ldap password to bind to
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_server`
+##### <a name="-gerrit--ldap_server"></a>`ldap_server`
 
 Data type: `Any`
 
 The ldap server address
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_sslverify`
+##### <a name="-gerrit--ldap_sslverify"></a>`ldap_sslverify`
 
 Data type: `Any`
 
 If false and $ldap_server is an ldaps:// style URL, Gerrit will not verify
 the server certificate when it connects to perform a query.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_timeout`
+##### <a name="-gerrit--ldap_timeout"></a>`ldap_timeout`
 
 Data type: `Any`
 
 The read timeout for an LDAP operation. The value is in the usual time-unit
 format like "1 s", "100 ms", etc..
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `ldap_username`
+##### <a name="-gerrit--ldap_username"></a>`ldap_username`
 
 Data type: `Any`
 
 The ldap user to bind to
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `mysql_java_connector`
+##### <a name="-gerrit--smtp_server"></a>`smtp_server`
+
+Data type: `Any`
+
+The SMTP server address
+
+Default value: `undef`
+
+##### <a name="-gerrit--smtp_port"></a>`smtp_port`
+
+Data type: `Any`
+
+The SMTP server port
+
+Default value: `undef`
+
+##### <a name="-gerrit--smtp_encryption"></a>`smtp_encryption`
+
+Data type: `Any`
+
+The SMTP encryption
+
+Default value: `undef`
+
+##### <a name="-gerrit--smtp_user"></a>`smtp_user`
+
+Data type: `Any`
+
+The SMTP user
+
+Default value: `undef`
+
+##### <a name="-gerrit--smtp_password"></a>`smtp_password`
+
+Data type: `Any`
+
+The SMTP password
+
+Default value: `undef`
+
+##### <a name="-gerrit--mysql_java_connector"></a>`mysql_java_connector`
 
 Data type: `Any`
 
@@ -362,7 +451,7 @@ The name of the java connector file
 
 Default value: `$gerrit::params::mysql_java_connector`
 
-##### `mysql_java_package`
+##### <a name="-gerrit--mysql_java_package"></a>`mysql_java_package`
 
 Data type: `Any`
 
@@ -370,15 +459,15 @@ The name of the java connector package
 
 Default value: `$gerrit::params::mysql_java_package`
 
-##### `manage_service`
+##### <a name="-gerrit--manage_service"></a>`manage_service`
 
 Data type: `Any`
 
 Should this module launch the service.
 
-Default value: ``true``
+Default value: `true`
 
-##### `user`
+##### <a name="-gerrit--user"></a>`user`
 
 Data type: `Any`
 
@@ -386,7 +475,7 @@ The user used to install gerrit
 
 Default value: `'gerrit'`
 
-##### `extra_folders`
+##### <a name="-gerrit--extra_folders"></a>`extra_folders`
 
 Data type: `Any`
 
@@ -396,25 +485,31 @@ Default value: `['hooks', 'plugins']`
 
 ## Defined types
 
-### `gerrit::config`
+### <a name="gerrit--config"></a>`gerrit::config`
 
 Set git config attributes
 
 #### Parameters
 
-The following parameters are available in the `gerrit::config` defined type.
+The following parameters are available in the `gerrit::config` defined type:
 
-##### `name`
+* [`name`](#-gerrit--config--name)
+* [`value`](#-gerrit--config--value)
+* [`ensure`](#-gerrit--config--ensure)
+* [`file`](#-gerrit--config--file)
+* [`user`](#-gerrit--config--user)
+
+##### <a name="-gerrit--config--name"></a>`name`
 
 The attribute name
 
-##### `value`
+##### <a name="-gerrit--config--value"></a>`value`
 
 Data type: `Any`
 
 The value of thie git config attribute.
 
-##### `ensure`
+##### <a name="-gerrit--config--ensure"></a>`ensure`
 
 Data type: `Any`
 
@@ -422,7 +517,7 @@ Manage the state of this git config attribute.
 
 Default value: `present`
 
-##### `file`
+##### <a name="-gerrit--config--file"></a>`file`
 
 Data type: `Any`
 
@@ -430,19 +525,30 @@ The file in which the git config attribute should be set.
 
 Default value: `"${gerrit::target}/etc/gerrit.config"`
 
-### `gerrit::folder`
+##### <a name="-gerrit--config--user"></a>`user`
+
+Data type: `Any`
+
+The owner of configuration
+
+Default value: `'gerrit'`
+
+### <a name="gerrit--folder"></a>`gerrit::folder`
 
 Define to create directories inside gerrit target path
 
 #### Parameters
 
-The following parameters are available in the `gerrit::folder` defined type.
+The following parameters are available in the `gerrit::folder` defined type:
 
-##### `name`
+* [`name`](#-gerrit--folder--name)
+* [`ensure`](#-gerrit--folder--ensure)
+
+##### <a name="-gerrit--folder--name"></a>`name`
 
 The folder name
 
-##### `ensure`
+##### <a name="-gerrit--folder--ensure"></a>`ensure`
 
 Data type: `Any`
 
@@ -450,19 +556,24 @@ Manage the state of this directory inside gerrit target path
 
 Default value: `'directory'`
 
-### `gerrit::hook`
+### <a name="gerrit--hook"></a>`gerrit::hook`
 
 Define to create gerrit hook
 
 #### Parameters
 
-The following parameters are available in the `gerrit::hook` defined type.
+The following parameters are available in the `gerrit::hook` defined type:
 
-##### `name`
+* [`name`](#-gerrit--hook--name)
+* [`ensure`](#-gerrit--hook--ensure)
+* [`source`](#-gerrit--hook--source)
+* [`content`](#-gerrit--hook--content)
+
+##### <a name="-gerrit--hook--name"></a>`name`
 
 The hook name
 
-##### `ensure`
+##### <a name="-gerrit--hook--ensure"></a>`ensure`
 
 Data type: `Any`
 
@@ -470,41 +581,45 @@ Manage the state of this gerrit hook.
 
 Default value: `'present'`
 
-##### `source`
+##### <a name="-gerrit--hook--source"></a>`source`
 
 Data type: `Any`
 
 The source of this hook. Can be any value valid for the `file` `source` parameter.
 
-Default value: ``undef``
+Default value: `undef`
 
-##### `content`
+##### <a name="-gerrit--hook--content"></a>`content`
 
 Data type: `Any`
 
 The content of this hook. Can be any value valid for the `file` `content` parameter.
 
-Default value: ``undef``
+Default value: `undef`
 
-### `gerrit::plugin`
+### <a name="gerrit--plugin"></a>`gerrit::plugin`
 
 Define to install gerrit plugins
 
 #### Parameters
 
-The following parameters are available in the `gerrit::plugin` defined type.
+The following parameters are available in the `gerrit::plugin` defined type:
 
-##### `name`
+* [`name`](#-gerrit--plugin--name)
+* [`source`](#-gerrit--plugin--source)
+* [`ensure`](#-gerrit--plugin--ensure)
+
+##### <a name="-gerrit--plugin--name"></a>`name`
 
 The plugin name
 
-##### `source`
+##### <a name="-gerrit--plugin--source"></a>`source`
 
 Data type: `Any`
 
 The source of this plugins. Can be any value valid for the `file` `source` parameter.
 
-##### `ensure`
+##### <a name="-gerrit--plugin--ensure"></a>`ensure`
 
 Data type: `Any`
 
@@ -512,15 +627,17 @@ Manage the state of this gerrit plugin.
 
 Default value: `'present'`
 
-### `gerrit::repository`
+### <a name="gerrit--repository"></a>`gerrit::repository`
 
 Define to create empty git bare repositories
 
 #### Parameters
 
-The following parameters are available in the `gerrit::repository` defined type.
+The following parameters are available in the `gerrit::repository` defined type:
 
-##### `name`
+* [`name`](#-gerrit--repository--name)
+
+##### <a name="-gerrit--repository--name"></a>`name`
 
 The repository name
 
