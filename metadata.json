@@ -1,6 +1,6 @@
 {
   "name": "puppet-gerrit",
-  "version": "2.0.0",
+  "version": "2.0.1-rc0",
   "author": "Vox Pupuli",
   "summary": "Web based code review and project management for Git based projects.",
   "license": "MIT",
