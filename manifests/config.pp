@@ -16,7 +16,7 @@ define gerrit::config (
   $file   = "${gerrit::target}/etc/gerrit.config",
   $user   = 'gerrit'
 ) {
-  if is_array($value) {
+  if $value =~ Array {
     # Check if the existing value in the config is set to exactly the right
     # combination of characters.  We do this by using a gross perl one-liner to
     # compare stdout from git-config with what puppet thinks should be the
