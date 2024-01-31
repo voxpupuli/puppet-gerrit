@@ -4,7 +4,30 @@ All notable changes to this project will be documented in this file.
 Each new release typically also includes the latest modulesync defaults.
 These should not affect the functionality of the module.
 
-## [v1.0.2](https://github.com/voxpupuli/puppet-gerrit/tree/v1.0.2) (2018-10-19)
+## [v2.0.0](https://github.com/voxpupuli/puppet-gerrit/tree/v2.0.0) (2024-01-31)
+
+[Full Changelog](https://github.com/voxpupuli/puppet-gerrit/compare/v1.0.2...v2.0.0)
+
+**Breaking changes:**
+
+- Drop Puppet 6 support [\#78](https://github.com/voxpupuli/puppet-gerrit/pull/78) ([bastelfreak](https://github.com/bastelfreak))
+- drop Ubuntu 14.04 support [\#63](https://github.com/voxpupuli/puppet-gerrit/pull/63) ([bastelfreak](https://github.com/bastelfreak))
+- modulesync 2.7.0 and drop puppet 4 [\#61](https://github.com/voxpupuli/puppet-gerrit/pull/61) ([bastelfreak](https://github.com/bastelfreak))
+
+**Implemented enhancements:**
+
+- Add Puppet 8 support [\#80](https://github.com/voxpupuli/puppet-gerrit/pull/80) ([bastelfreak](https://github.com/bastelfreak))
+- puppetlabs/stdlib: Allow 9.x [\#79](https://github.com/voxpupuli/puppet-gerrit/pull/79) ([bastelfreak](https://github.com/bastelfreak))
+- Fix config management, add SMTP [\#77](https://github.com/voxpupuli/puppet-gerrit/pull/77) ([uddr](https://github.com/uddr))
+- Allow stdlib 8.0.0 [\#73](https://github.com/voxpupuli/puppet-gerrit/pull/73) ([smortex](https://github.com/smortex))
+
+**Merged pull requests:**
+
+- puppet-lint: fix top\_scope\_facts warnings [\#74](https://github.com/voxpupuli/puppet-gerrit/pull/74) ([bastelfreak](https://github.com/bastelfreak))
+- Add puppet-strings docs [\#70](https://github.com/voxpupuli/puppet-gerrit/pull/70) ([baurmatt](https://github.com/baurmatt))
+- modulesync 3.0.0 & puppet-lint updates [\#69](https://github.com/voxpupuli/puppet-gerrit/pull/69) ([bastelfreak](https://github.com/bastelfreak))
+
+## [v1.0.2](https://github.com/voxpupuli/puppet-gerrit/tree/v1.0.2) (2018-10-20)
 
 [Full Changelog](https://github.com/voxpupuli/puppet-gerrit/compare/v1.0.1...v1.0.2)
 
