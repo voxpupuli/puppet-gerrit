@@ -11,7 +11,7 @@ describe 'gerrit', type: :class do
         let :params do
           {
             source: '/tmp/gerrit.war',
-            target: '/srv/gerrit'
+            target: '/srv/gerrit',
           }
         end
 
