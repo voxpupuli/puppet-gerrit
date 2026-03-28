@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'gerrit', type: :class do
@@ -45,7 +47,7 @@ describe 'gerrit', type: :class do
         it { is_expected.to contain_gerrit__folder('hooks') }
         it { is_expected.to contain_gerrit__folder('plugins') }
 
-        case facts[:operatingsystem]
+        case facts[:os]['name']
         when 'Debian', 'Ubuntu'
           it { is_expected.to contain_package('libmysql-java') }
           it { is_expected.to contain_package('default-jdk') }
