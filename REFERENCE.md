@@ -640,4 +640,3 @@ The following parameters are available in the `gerrit::repository` defined type:
 ##### <a name="-gerrit--repository--name"></a>`name`
 
 The repository name
-
